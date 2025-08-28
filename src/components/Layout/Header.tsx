@@ -1,6 +1,6 @@
 function Header() {
     return (
-        <div className="flex h-[100px] w-full items-center gap-3">
+        <div className="flex h-[100px] w-full items-center gap-3 ">
             <div className="flex w-[400px] items-center justify-center">
                 <img src="/Logo.svg" alt="logo" className="h-[50px] w-[200px]" />
             </div>
