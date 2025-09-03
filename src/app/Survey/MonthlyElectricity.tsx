@@ -2,8 +2,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
-import EnergyConsumption from '../../components/Ennergy/EnergyConsumotion';
-import EnergyProduction from '../../components/Ennergy/EnergyProduction';
+import EnergyConsumption from '../../components/EnergyType/EnergyConsumotion';
+import EnergyProduction from '../../components/EnergyType/EnergyProduction';
 
 const schema = yup.object({});
 

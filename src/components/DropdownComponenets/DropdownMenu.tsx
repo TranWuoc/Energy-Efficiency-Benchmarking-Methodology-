@@ -20,7 +20,7 @@ function DropdownMenu({ optionLabel, options }: DropdownMenuProps) {
     return (
         <div className="relative inline-block text-left">
             <div
-                className=" flex cursor-pointer items-center justify-between px-[20px] hover:text-[#119C59]"
+                className=" flex cursor-pointer items-center justify-between px-[20px] py-[10px] hover:text-[#119C59]"
                 onClick={() => setOpen((prev) => !prev)}
             >
                 <span>{optionLabel}</span>

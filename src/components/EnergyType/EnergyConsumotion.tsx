@@ -9,8 +9,8 @@ function EnergyConsumption({ methods }: any) {
             <DropdownPickerYear onSelected={(val) => methods.setValue('year', val)} value={year} />
 
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400 ">
-                    <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <table className="w-full bg-white text-left text-sm text-gray-500 rtl:text-right">
+                    <thead className="bg-gray-50 text-xs uppercase text-gray-700">
                         <tr>
                             <th scope="col" className="border-r px-6 py-3">
                                 Tháng
@@ -23,10 +23,10 @@ function EnergyConsumption({ methods }: any) {
                             </th>
                         </tr>
                         <tr>
-                            <th className="border-r"></th>
-                            <th className="border-r"></th>
-                            <th className=" w-[250px] border-r px-6 py-3">
-                                <div className="flex flex-col">
+                            <th className="border-b border-r"></th>
+                            <th className="border-b border-r"></th>
+                            <th className=" border-b border-r px-6 py-3">
+                                <div className="flex flex-col gap-2">
                                     <span className=" flex items-center justify-center">Hoá đơn điện hàng tháng</span>
                                     <input
                                         readOnly
@@ -38,8 +38,8 @@ function EnergyConsumption({ methods }: any) {
                                     />
                                 </div>
                             </th>
-                            <th className=" px-4 py-3">
-                                <div className=" flex flex-col ">
+                            <th className=" border-b px-4 py-3">
+                                <div className=" flex flex-col gap-2">
                                     <span className=" flex items-center justify-center">
                                         Công tơ điện/ Báo cáo kiểm toán
                                     </span>
@@ -55,12 +55,12 @@ function EnergyConsumption({ methods }: any) {
                             </th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="bg-white">
                         {Array.from({ length: 12 }, (_, i) => (
-                            <tr key={i} className="border-b bg-white  dark:border-gray-700 dark:bg-gray-800 ">
+                            <tr key={i} className="border-b  ">
                                 <th
                                     scope="row"
-                                    className="whitespace-nowrap border-r px-6 py-4 font-medium text-gray-900 dark:text-white"
+                                    className="whitespace-nowrap border-r px-6 py-4 font-medium text-gray-900"
                                 >
                                     Tháng {i + 1}
                                 </th>
@@ -72,7 +72,9 @@ function EnergyConsumption({ methods }: any) {
                                         {...methods.register(`consumptionMonth${i + 1}`)}
                                     />
                                 </td>
-                                <td className="border-r px-6 py-4">
+                                <td
+                                    className={`border-r px-6 py-4 ${sourceType !== 'bill' ? 'cursor-not-allowed bg-gray-400 opacity-50' : ''}`}
+                                >
                                     <input
                                         type="number"
                                         placeholder="Nhập số liệu"
@@ -81,11 +83,13 @@ function EnergyConsumption({ methods }: any) {
                                         disabled={sourceType !== 'bill'}
                                     />
                                 </td>
-                                <td className="px-6 py-4">
+                                <td
+                                    className={`px-6 py-4 ${sourceType !== 'meter' ? 'cursor-not-allowed bg-gray-400 opacity-50' : ''}`}
+                                >
                                     <input
                                         type="number"
                                         placeholder="Nhập số liệu"
-                                        className={`w-full rounded-md border border-gray-300 px-3 py-2 focus:border-green-400 focus:outline-none ${sourceType === 'meter' ? '' : 'cursor-not-allowed opacity-50'}`}
+                                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-green-400 focus:outline-none"
                                         {...methods.register(`meterMonth${i + 1}`)}
                                         disabled={sourceType !== 'meter'}
                                     />

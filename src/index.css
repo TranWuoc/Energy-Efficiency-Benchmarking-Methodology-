@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+:root {
+    --green-color: #14b86e;
+}
+
 .gradient-border-b {
     position: relative;
 }
@@ -21,4 +25,8 @@
 }
 .scrollbar-hidden::-webkit-scrollbar {
     display: none; /* Chrome, Safari */
+}
+
+.text-green-color {
+    color: var(--green-color);
 }

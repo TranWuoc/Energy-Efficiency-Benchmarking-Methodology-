@@ -10,9 +10,9 @@ function Header() {
                         <div className="text-[20px] hover:text-[#14B86E] hover:underline">{item}</div>
                     ))}
                 </div>
-                <div>
-                    <button className=" flex items-center rounded-3xl  border border-[#14B86E] px-20 py-3">
-                        <span className="font-bold text-[#14B86E]">Login</span>
+                <div className=" hover:text-teal-50 ">
+                    <button className="flex cursor-pointer items-center rounded-3xl border  border-[#14B86E] px-20 py-2 font-bold text-[#14B86E] hover:bg-[#14B86E] hover:text-white">
+                        Login
                     </button>
                 </div>
             </div>
