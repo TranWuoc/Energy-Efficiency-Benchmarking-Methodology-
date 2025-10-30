@@ -21,7 +21,6 @@ const options: Option[] = Array.from({ length: 24 * 4 }, (_, i) => {
 function DropdownPickerTime({ value, onChange }: DropdownPickerTimeProps) {
     const [open, setOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
-    console.log(menuRef);
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {

@@ -1,10 +1,10 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import CheckboxGroup from '../../components/CheckboxGroup';
 import { useState } from 'react';
-import InputField from '../../components/InputField';
-import DropdownPickerTime from '../../components/DropdownComponenets/DropdownPickerTime';
+import InputField from '../../../components/InputField';
+import CheckboxGroup from '../../../components/CheckboxGroup';
+import DropdownPickerTime from '../../../components/DropdownComponenets/DropdownPickerTime';
 
 const schema = yup.object({
     space: yup.array().of(yup.string()).required(),

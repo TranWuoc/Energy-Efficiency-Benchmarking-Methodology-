@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import CheckboxGroup from '../CheckboxGroup';
 import InputField from '../InputField';
+import { useFormContext } from 'react-hook-form';
 
 const options = [
     { label: '☀️ Điện mặt trời (Solar PV)', value: '☀️ Điện mặt trời (Solar PV)' },
@@ -8,7 +9,8 @@ const options = [
     { label: '🌋 Địa nhiệt (Geothermal)', value: '🌋 Địa nhiệt (Geothermal)' },
 ];
 
-function EnergyProduction({ methods }: any) {
+function EnergyProduction() {
+    const { watch } = useFormContext();
     const [selected, setSelected] = useState<string[]>([]);
     const [item, setItem] = useState('');
     const [open, setOpen] = useState(false);
@@ -27,7 +29,7 @@ function EnergyProduction({ methods }: any) {
         };
     }, []);
 
-    const optionsEnergy = methods.watch('energy');
+    const optionsEnergy = watch('energy') as [];
 
     return (
         <div className="flex w-full flex-col items-center gap-3 bg-[white] px-[30px] py-[30px]">
@@ -52,7 +54,7 @@ function EnergyProduction({ methods }: any) {
                     {open && (
                         <div className="absolute z-50 mt-2 rounded-2xl bg-white py-4 shadow-lg">
                             <div className="flex flex-col">
-                                {(optionsEnergy || []).map((optionEnergy: any) => (
+                                {(optionsEnergy || []).map((optionEnergy) => (
                                     <button
                                         key={optionEnergy}
                                         className={`px-4 py-2 text-left hover:bg-[#119C59] hover:text-white `}

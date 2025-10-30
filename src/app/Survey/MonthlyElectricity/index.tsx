@@ -2,8 +2,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
-import EnergyConsumption from '../../components/EnergyType/EnergyConsumotion';
-import EnergyProduction from '../../components/EnergyType/EnergyProduction';
+import EnergyProduction from '../../../components/EnergyType/EnergyProduction';
+import EnergyConsumption from '../../../components/EnergyType/EnergyConsumption';
 
 const schema = yup.object({});
 
@@ -14,6 +14,8 @@ function MonthlyElectricity() {
     const methods = useForm<FormData>({
         resolver: yupResolver(schema as yup.ObjectSchema<FormData>),
     });
+
+    console.log('123', methods.getValues);
 
     const onSubmit = async (data: FormData) => {
         console.log(data);
@@ -50,8 +52,8 @@ function MonthlyElectricity() {
                 </div>
                 <FormProvider {...methods}>
                     <form onSubmit={methods.handleSubmit(onSubmit)} className="mt-[20px] flex flex-col gap-[20px]">
-                        {activeTab === 'consumed' && <EnergyConsumption methods={methods} />}
-                        {activeTab === 'produced' && <EnergyProduction methods={methods} />}
+                        {activeTab === 'consumed' && <EnergyConsumption />}
+                        {activeTab === 'produced' && <EnergyProduction />}
                         <button type="submit">Submit</button>
                     </form>
                 </FormProvider>

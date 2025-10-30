@@ -1,34 +1,21 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import InputField from '../../components/InputField';
-import DropdownItems from '../../components/DropdownComponenets/DropdownItems';
-import GovernmentOffice from '../../components/StyleOffiec/Government';
-import CommercialOffice from '../../components/StyleOffiec/CommercialOffice';
-
-const schema = yup.object({
-    name: yup.string().required(),
-    direction: yup.string(),
-    owner: yup.string(),
-    officeStyle: yup.string(),
-    yearOperator: yup.number(),
-    HVACSystem: yup.string(),
-    lightSystem: yup.string(),
-    hotWaterSystem: yup.string(),
-    anotherSystem: yup.string(),
-    temperatureSetup: yup.string(),
-    lightSetup: yup.string(),
-    anotherSetup: yup.string(),
-});
-
-type FormData = yup.InferType<typeof schema>;
+import InputField from '../../../components/InputField';
+import CommercialOffice from '../../../components/StyleOffiec/CommercialOffice';
+import GovernmentOffice from '../../../components/StyleOffiec/Government';
+import DropdownItems from '../../../components/DropdownComponenets/DropdownItems';
+import type { FormSaveGeneralInformation } from './type';
+import { useGetSaveGeneralInformationSchema } from './useSchema';
 
 function GeneralInformation() {
-    const methods = useForm<FormData>({
-        resolver: yupResolver(schema as yup.ObjectSchema<FormData>),
+    const schema = useGetSaveGeneralInformationSchema();
+    // console.log('🚀 ~ GeneralInformation ~ schema:', schema.fields);
+    const methods = useForm<FormSaveGeneralInformation>({
+        resolver: yupResolver(Object(schema) as yup.ObjectSchema<FormSaveGeneralInformation>),
     });
 
-    const onSubmit = async (data: FormData) => {
+    const onSubmit = async (data: FormSaveGeneralInformation) => {
         console.log(data);
     };
 

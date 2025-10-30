@@ -4,7 +4,7 @@ import Input from './Input';
 type InputFieldProps = {
     name: string;
     component?: React.ComponentType<any>;
-    [key: string]: any;
+    [key: string]: unknown;
 };
 
 function InputField({ name, component: Componenet = Input, ...rest }: InputFieldProps) {

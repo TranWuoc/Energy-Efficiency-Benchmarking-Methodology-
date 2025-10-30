@@ -1,12 +1,15 @@
+import { useFormContext } from 'react-hook-form';
 import DropdownPickerYear from '../DropdownComponenets/DropdownYear';
 
-function EnergyConsumption({ methods }: any) {
-    const year = methods.watch('year') || '';
-    const sourceType = methods.watch('sourceType') || '';
+function EnergyConsumption() {
+    const { watch, setValue, register } = useFormContext();
+
+    const year = watch('year') || '';
+    const sourceType = watch('sourceType') || '';
 
     return (
         <div className=" flex flex-col items-center gap-3">
-            <DropdownPickerYear onSelected={(val) => methods.setValue('year', val)} value={year} />
+            <DropdownPickerYear onSelected={(val) => setValue('year', val)} value={year} />
 
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table className="w-full bg-white text-left text-sm text-gray-500 rtl:text-right">
@@ -32,9 +35,9 @@ function EnergyConsumption({ methods }: any) {
                                         readOnly
                                         type="radio"
                                         value="bill"
-                                        {...methods.register('sourceType')}
+                                        {...register('sourceType')}
                                         checked={sourceType === 'bill'}
-                                        onChange={() => methods.setValue('sourceType', 'bill')}
+                                        onChange={() => setValue('sourceType', 'bill')}
                                     />
                                 </div>
                             </th>
@@ -47,9 +50,9 @@ function EnergyConsumption({ methods }: any) {
                                         readOnly
                                         type="radio"
                                         value="meter"
-                                        {...methods.register('sourceType')}
+                                        {...register('sourceType')}
                                         checked={sourceType === 'meter'}
-                                        onChange={() => methods.setValue('sourceType', 'meter')}
+                                        onChange={() => setValue('sourceType', 'meter')}
                                     />
                                 </div>
                             </th>
@@ -69,7 +72,7 @@ function EnergyConsumption({ methods }: any) {
                                         type="number"
                                         placeholder="Nhập số liệu"
                                         className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-green-400 focus:outline-none"
-                                        {...methods.register(`consumptionMonth${i + 1}`)}
+                                        {...register(`consumptionMonth${i + 1}`)}
                                     />
                                 </td>
                                 <td
@@ -79,7 +82,7 @@ function EnergyConsumption({ methods }: any) {
                                         type="number"
                                         placeholder="Nhập số liệu"
                                         className={`w-full rounded-md border border-gray-300 px-3 py-2 focus:border-green-400 focus:outline-none ${sourceType === 'bill' ? '' : 'cursor-not-allowed opacity-50'}`}
-                                        {...methods.register(`billMonth${i + 1}`)}
+                                        {...register(`billMonth${i + 1}`)}
                                         disabled={sourceType !== 'bill'}
                                     />
                                 </td>
@@ -90,7 +93,7 @@ function EnergyConsumption({ methods }: any) {
                                         type="number"
                                         placeholder="Nhập số liệu"
                                         className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-green-400 focus:outline-none"
-                                        {...methods.register(`meterMonth${i + 1}`)}
+                                        {...register(`meterMonth${i + 1}`)}
                                         disabled={sourceType !== 'meter'}
                                     />
                                 </td>
