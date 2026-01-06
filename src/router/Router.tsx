@@ -8,6 +8,7 @@ import MonthlyElectricity from '../app/Survey/MonthlyElectricity/index.tsx';
 import LandingPageLayout from '../layouts/LandingpageLayout.tsx';
 import GeneralInformation from '../app/Survey/GeneralInformation/index.tsx';
 import OperatorBuilding from '../app/Survey/OperatorBuilding/index.tsx';
+import Buildings from '../app/Buildings/index.tsx';
 
 const router = createBrowserRouter([
     {
@@ -36,10 +37,10 @@ const router = createBrowserRouter([
             },
         ],
     },
+    {
+        path: '/buildings',
+        element: <Buildings />,
+    },
 ]);
 
-createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-        <RouterProvider router={router} />
-    </StrictMode>,
-);
+export default router;

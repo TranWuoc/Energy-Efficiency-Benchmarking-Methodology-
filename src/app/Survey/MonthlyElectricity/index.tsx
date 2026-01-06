@@ -4,6 +4,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
 import EnergyProduction from '../../../components/EnergyType/EnergyProduction';
 import EnergyConsumption from '../../../components/EnergyType/EnergyConsumption';
+import { useGetMonthlyElectricitySchema } from './useSchema';
+import type { FormMonthlyElectricity } from './type';
 
 const schema = yup.object({});
 
@@ -11,8 +13,10 @@ type FormData = yup.InferType<typeof schema>;
 
 function MonthlyElectricity() {
     const [activeTab, setActiveTab] = useState('consumed');
-    const methods = useForm<FormData>({
-        resolver: yupResolver(schema as yup.ObjectSchema<FormData>),
+
+    const schema = useGetMonthlyElectricitySchema();
+    const methods = useForm<FormMonthlyElectricity>({
+        resolver: yupResolver(schema as yup.ObjectSchema<FormMonthlyElectricity>),
     });
 
     console.log('123', methods.getValues);

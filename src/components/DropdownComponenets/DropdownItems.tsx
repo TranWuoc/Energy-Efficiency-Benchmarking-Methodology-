@@ -3,22 +3,24 @@ import Input from '../Input';
 
 interface Option {
     label: string;
-    value: string;
+    value: number;
 }
 
 interface DropdownItemsProps {
-    value: string;
-    onChange: (val: string) => void;
+    value: number;
+    onChange: (val: number) => void;
 }
 
 const options: Option[] = [
-    { label: ' Văn phòng công sở nhà nước ', value: ' Văn phòng công sở nhà nước ' },
-    { label: ' Văn phòng thương mại ', value: ' Văn phòng thương mại ' },
+    { label: ' Văn phòng công sở nhà nước ', value: 1 },
+    { label: ' Văn phòng thương mại ', value: 2 },
 ];
 
 function DropdownItems({ value, onChange }: DropdownItemsProps) {
     const [open, setOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+
+    const selected = options.find((o) => o.value === value)?.label || '';
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -35,7 +37,7 @@ function DropdownItems({ value, onChange }: DropdownItemsProps) {
             <div className="relative flex flex-row items-center">
                 <Input
                     readOnly
-                    value={value}
+                    value={selected}
                     placeholder=" 4. Loại tòa nhà/ chức năng tòa nhà"
                     onClick={() => setOpen((prev) => !prev)}
                 />
