@@ -53,3 +53,11 @@ export interface FormMonthlyElectricity {
     consumedElectricity: ElectricityConsumption[];
     producedElectricity: RenewableProduction[];
 }
+
+export const ENERGY_SOURCE_OPTIONS = [
+    { label: '☀️ Điện mặt trời (Solar PV)', value: 'solar' as const },
+    { label: '💨 Điện gió (Wind)', value: 'wind' as const },
+    { label: '🌋 Địa nhiệt (Geothermal)', value: 'geothermal' as const },
+];
+
+export type EnergySourceType = 'solar' | 'wind' | 'geothermal';

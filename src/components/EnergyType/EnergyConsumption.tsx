@@ -31,7 +31,7 @@ function EnergyConsumption() {
     return (
         <div className="flex flex-col items-center gap-6">
             {/* Button thêm năm */}
-            <div className="flex w-full justify-end">
+            <div className="flex justify-end">
                 <button
                     type="button"
                     onClick={handleAddYear}
