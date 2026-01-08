@@ -1,22 +1,28 @@
 import { useState, useRef, useEffect } from 'react';
 import Input from '../Input';
 
-interface Option {
+export interface DropdownOption<T = number | string> {
     label: string;
-    value: number;
+    value: T;
 }
 
-interface DropdownItemsProps {
-    value: number;
-    onChange: (val: number) => void;
+interface DropdownItemsProps<T = number | string> {
+    value?: T;
+    onChange?: (val: T) => void;
+    options: DropdownOption<T>[];
+    placeholder?: string;
+    className?: string;
+    disabled?: boolean;
 }
 
-const options: Option[] = [
-    { label: ' Văn phòng công sở nhà nước ', value: 1 },
-    { label: ' Văn phòng thương mại ', value: 2 },
-];
-
-function DropdownItems({ value, onChange }: DropdownItemsProps) {
+function DropdownItems<T = number | string>({
+    value,
+    onChange,
+    options,
+    placeholder = 'Chọn một mục',
+    className = '',
+    disabled = false,
+}: DropdownItemsProps<T>) {
     const [open, setOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -32,29 +38,37 @@ function DropdownItems({ value, onChange }: DropdownItemsProps) {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    const handleSelect = (val: T) => {
+        onChange?.(val);
+        setOpen(false);
+    };
+
     return (
-        <div className="relative inline-block text-left" ref={menuRef}>
-            <div className="relative flex flex-row items-center">
+        <div className={`relative w-full text-left ${className}`} ref={menuRef}>
+            <div className="relative flex w-full flex-row items-center">
                 <Input
                     readOnly
                     value={selected}
-                    placeholder=" 4. Loại tòa nhà/ chức năng tòa nhà"
-                    onClick={() => setOpen((prev) => !prev)}
+                    placeholder={placeholder}
+                    onClick={() => !disabled && setOpen((prev) => !prev)}
+                    className={`w-full ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                 />
-                <img src="/arrowDown.svg" className="absolute right-0 h-[20px] w-[20px]" />
+                <img
+                    src="/arrowDown.svg"
+                    className={`pointer-events-none absolute right-2 h-[20px] w-[20px] transition-transform ${open ? 'rotate-180' : ''}`}
+                />
             </div>
             {open && (
-                <div className="absolute z-50 mt-2 rounded-md bg-white shadow-lg">
-                    <div className=" ">
-                        {options.map((opt) => (
+                <div className="absolute z-50 mt-2 max-h-[300px] w-full overflow-y-auto rounded-md bg-white shadow-lg">
+                    <div className="flex flex-col">
+                        {options.map((opt, index) => (
                             <button
-                                key={opt.value}
+                                key={index}
                                 type="button"
-                                onClick={() => {
-                                    onChange(opt.value);
-                                    setOpen(false);
-                                }}
-                                className="h-[50px] w-[300px] rounded-md hover:bg-[#94DD8B]"
+                                onClick={() => handleSelect(opt.value)}
+                                className={`h-[50px] w-full rounded-md px-4 text-left hover:bg-[#94DD8B] ${
+                                    value === opt.value ? 'bg-[#119C59] text-white' : ''
+                                }`}
                             >
                                 {opt.label}
                             </button>

@@ -6,23 +6,33 @@ import EnergyProduction from '../../../components/EnergyType/EnergyProduction';
 import EnergyConsumption from '../../../components/EnergyType/EnergyConsumption';
 import { useGetMonthlyElectricitySchema } from './useSchema';
 import type { FormMonthlyElectricity } from './type';
-
-const schema = yup.object({});
-
-type FormData = yup.InferType<typeof schema>;
+import { useNavigate } from 'react-router-dom';
+import { useSurvey } from '../../../contexts/SurveyContext';
 
 function MonthlyElectricity() {
     const [activeTab, setActiveTab] = useState('consumed');
-
+    const navigate = useNavigate();
+    const { updateMonthlyElectricity, surveyData, submitAllData, isComplete } = useSurvey();
     const schema = useGetMonthlyElectricitySchema();
     const methods = useForm<FormMonthlyElectricity>({
         resolver: yupResolver(schema as yup.ObjectSchema<FormMonthlyElectricity>),
+        defaultValues: surveyData.monthlyElectricity,
     });
 
-    console.log('123', methods.getValues);
-
-    const onSubmit = async (data: FormData) => {
+    const onSubmit = async (data: FormMonthlyElectricity) => {
         console.log(data);
+        updateMonthlyElectricity(data);
+    };
+    const handleSubmit = async () => {
+        const isValid = await methods.trigger();
+        if (!isValid) return;
+
+        const currentData = methods.getValues();
+        updateMonthlyElectricity(currentData);
+
+        await submitAllData();
+
+        console.log();
     };
 
     return (
@@ -58,7 +68,22 @@ function MonthlyElectricity() {
                     <form onSubmit={methods.handleSubmit(onSubmit)} className="mt-[20px] flex flex-col gap-[20px]">
                         {activeTab === 'consumed' && <EnergyConsumption />}
                         {activeTab === 'produced' && <EnergyProduction />}
-                        <button type="submit">Submit</button>
+                        <div className="flex justify-between gap-4">
+                            <button
+                                type="button"
+                                onClick={() => navigate('/home/operator')}
+                                className="rounded border border-gray-400 px-6 py-3 hover:bg-gray-100"
+                            >
+                                ← Quay lại
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleSubmit}
+                                className="rounded bg-green-600 px-6 py-3 text-white hover:bg-green-700"
+                            >
+                                ✓ Hoàn thành & Gửi
+                            </button>
+                        </div>
                     </form>
                 </FormProvider>
             </div>

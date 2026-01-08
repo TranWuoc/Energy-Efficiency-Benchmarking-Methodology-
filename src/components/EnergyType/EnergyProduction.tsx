@@ -7,6 +7,7 @@ import {
     type FormMonthlyElectricity,
 } from '../../app/Survey/MonthlyElectricity/type';
 import DropdownPickerYear from '../DropdownComponenets/DropdownYear';
+import { generateDefaultRenewableProduction } from '../../app/Survey/MonthlyElectricity/useSchema';
 
 function EnergyProduction() {
     const { watch, setValue, control, register } = useFormContext<FormMonthlyElectricity>();

@@ -2,7 +2,7 @@ function Input({ className, type, placeholder, ...props }: React.InputHTMLAttrib
     return (
         <>
             <input
-                className={`h-[40px] w-[300px] border-b-2 border-[#14B86E] px-1  ${className ?? ''}`}
+                className={`h-[40px] min-w-0 border-b-2 border-[#14B86E] px-1 ${className ?? ''}`}
                 placeholder={placeholder}
                 type={type}
                 {...props}

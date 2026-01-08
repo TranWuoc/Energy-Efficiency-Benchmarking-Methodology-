@@ -5,16 +5,20 @@ import type { FormOperatorBuilding, SpaceZoneOperation } from './type';
 import { SPACE_ZONE_OPTIONS, getZoneLabelByCode } from './type';
 import { useGetOperatorBuildingSchema, generateDefaultSpaceZone } from './useSchema';
 import * as yup from 'yup';
-import DropdownPickerTime from '../../../components/DropdownComponenets/DropdownPickerTime';
+import { useNavigate } from 'react-router-dom';
+import { useSurvey } from '../../../contexts/SurveyContext';
+import DropdownItems from '../../../components/DropdownComponenets/DropdownItems';
+import { UTILISATION_LEVEL_OPTIONS } from '../../../constants';
+import DropdownTimeRange from '../../../components/DropdownComponenets/DropdownTimeRange';
 
 function OperatorBuilding() {
+    const navigate = useNavigate();
+    const { updateOperatorBuilding, surveyData } = useSurvey();
     const schema = useGetOperatorBuildingSchema();
 
     const methods = useForm<FormOperatorBuilding>({
         resolver: yupResolver(schema as yup.ObjectSchema<FormOperatorBuilding>),
-        defaultValues: {
-            spaceZones: [],
-        },
+        defaultValues: surveyData.operatorBuilding.spaceZones ? surveyData.operatorBuilding : { spaceZones: [] },
     });
 
     const { control, watch, setValue } = methods;
@@ -25,8 +29,9 @@ function OperatorBuilding() {
     });
 
     const onSubmit = async (data: FormOperatorBuilding) => {
-        console.log('Form Data:', data);
-        // TODO: Call API to save data
+        console.log(data);
+        updateOperatorBuilding(data);
+        navigate('/home/monthly-electricity');
     };
 
     // Lấy danh sách zoneCode đã chọn
@@ -35,10 +40,8 @@ function OperatorBuilding() {
     // Xử lý khi toggle checkbox
     const handleZoneToggle = (zoneCode: SpaceZoneOperation['zoneCode'], checked: boolean) => {
         if (checked) {
-            // Thêm zone mới
             append(generateDefaultSpaceZone(zoneCode));
         } else {
-            // Xóa zone
             const index = fields.findIndex((f) => f.zoneCode === zoneCode);
             if (index !== -1) {
                 remove(index);
@@ -88,85 +91,77 @@ function OperatorBuilding() {
                                     <span className="text-lg font-bold">{getZoneLabelByCode(field.zoneCode)}</span>
 
                                     {/* Thời gian hoạt động */}
-                                    <div className="flex flex-wrap justify-between gap-4">
+                                    <div className="flex items-center justify-between">
                                         {/* Ngày thường */}
-                                        <div className="flex items-center gap-4">
-                                            <span>Ngày thường (T2-T6):</span>
-                                            <DropdownPickerTime
-                                                value={watch(`spaceZones.${index}.weekday.from`)}
-                                                onSelected={(val) => setValue(`spaceZones.${index}.weekday.from`, val)}
-                                                placeholder="Từ"
-                                            />
-                                            <span>Đến</span>
-                                            <DropdownPickerTime
-                                                value={watch(`spaceZones.${index}.weekday.to`)}
-                                                onSelected={(val) => setValue(`spaceZones.${index}.weekday.to`, val)}
-                                                placeholder="Đến"
-                                            />
-                                        </div>
+                                        <DropdownTimeRange
+                                            label="Ngày thường (T2-T6):"
+                                            value={watch(`spaceZones.${index}.weekday`)}
+                                            onChange={(val) => setValue(`spaceZones.${index}.weekday`, val)}
+                                            placeholderFrom="Từ"
+                                            placeholderTo="Đến"
+                                        />
 
                                         {/* Thứ 7 */}
-                                        <div className="flex items-center gap-4">
-                                            <span>Thứ 7:</span>
-                                            <DropdownPickerTime
-                                                value={watch(`spaceZones.${index}.saturday.from`)}
-                                                onSelected={(val) => setValue(`spaceZones.${index}.saturday.from`, val)}
-                                                placeholder="Từ"
-                                            />
-                                            <span>Đến</span>
-                                            <DropdownPickerTime
-                                                value={watch(`spaceZones.${index}.saturday.to`)}
-                                                onSelected={(val) => setValue(`spaceZones.${index}.saturday.to`, val)}
-                                                placeholder="Đến"
-                                            />
-                                        </div>
+                                        <DropdownTimeRange
+                                            label="Thứ 7:"
+                                            value={watch(`spaceZones.${index}.saturday`)}
+                                            onChange={(val) => setValue(`spaceZones.${index}.saturday`, val)}
+                                            placeholderFrom="Từ"
+                                            placeholderTo="Đến"
+                                            className="ml-30"
+                                        />
 
                                         {/* Chủ nhật */}
-                                        <div className="flex items-center gap-4">
-                                            <span>Chủ nhật:</span>
-                                            <DropdownPickerTime
-                                                value={watch(`spaceZones.${index}.sunday.from`)}
-                                                onSelected={(val) => setValue(`spaceZones.${index}.sunday.from`, val)}
-                                                placeholder="Từ"
-                                            />
-                                            <span>Đến</span>
-                                            <DropdownPickerTime
-                                                value={watch(`spaceZones.${index}.sunday.to`)}
-                                                onSelected={(val) => setValue(`spaceZones.${index}.sunday.to`, val)}
-                                                placeholder="Đến"
-                                            />
-                                        </div>
+                                        <DropdownTimeRange
+                                            label="Chủ nhật:"
+                                            value={watch(`spaceZones.${index}.sunday`)}
+                                            onChange={(val) => setValue(`spaceZones.${index}.sunday`, val)}
+                                            placeholderFrom="Từ"
+                                            placeholderTo="Đến"
+                                        />
                                     </div>
 
                                     {/* Thông tin bổ sung */}
                                     <div className="flex flex-row gap-4">
                                         <InputField
                                             name={`spaceZones.${index}.utilisationLevel`}
+                                            component={DropdownItems}
+                                            options={UTILISATION_LEVEL_OPTIONS}
                                             placeholder="Mức độ sử dụng"
-                                            className="!w-[200px]"
+                                            size="md"
                                         />
                                         <InputField
                                             name={`spaceZones.${index}.averagePeople`}
                                             placeholder="Số người trung bình"
-                                            className="!w-[200px]"
+                                            size="md"
                                             type="number"
+                                            className="ml-10"
                                         />
                                         <InputField
                                             name={`spaceZones.${index}.note`}
                                             placeholder="Ghi chú thêm"
-                                            className="!w-[200px]"
+                                            size="md"
                                         />
                                     </div>
                                 </div>
                             ))
                         )}
 
-                        <button
-                            type="submit"
-                            className="mt-4 rounded bg-blue-500 px-6 py-3 text-white hover:bg-blue-600"
-                        >
-                            Lưu thông tin
-                        </button>
+                        <div className="flex justify-between gap-4">
+                            <button
+                                type="button"
+                                onClick={() => navigate('/home/general')}
+                                className="rounded border border-gray-400 px-6 py-3 hover:bg-gray-100"
+                            >
+                                ← Quay lại
+                            </button>
+                            <button
+                                type="submit"
+                                className="rounded bg-blue-500 px-6 py-3 text-white hover:bg-blue-600"
+                            >
+                                Tiếp theo →
+                            </button>
+                        </div>
                     </form>
                 </FormProvider>
             </div>

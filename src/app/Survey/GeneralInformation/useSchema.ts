@@ -40,6 +40,18 @@ const commercialZoneSchema = yup.object({
     camera: timeRangeSchema.default({ from: null, to: null }),
 });
 
+// Helper để transform giá trị rỗng thành null
+const nullableNumber = yup
+    .number()
+    .transform((value, originalValue) => {
+        // Nếu giá trị gốc là chuỗi rỗng hoặc chỉ có khoảng trắng, trả về null
+        if (originalValue === '' || (typeof originalValue === 'string' && originalValue.trim() === '')) {
+            return null;
+        }
+        return value;
+    })
+    .nullable();
+
 export function useGetSaveGeneralInformationSchema() {
     const schema = useMemo(() => {
         return yup.object({
@@ -51,12 +63,7 @@ export function useGetSaveGeneralInformationSchema() {
                 .number()
                 .oneOf([1, 2], 'Loại tòa nhà phải là 1 (Công sở) hoặc 2 (Thương mại)')
                 .required('Loại tòa nhà là bắt buộc'),
-            commissioningYear: yup
-                .number()
-                .min(1900, 'Năm phải >= 1900')
-                .max(3000, 'Năm phải <= 3000')
-                .nullable()
-                .default(null),
+            commissioningYear: nullableNumber.min(1900, 'Năm phải >= 1900').max(3000, 'Năm phải <= 3000').default(null),
 
             // Hệ thống kỹ thuật
             hasHVAC: yup.boolean().default(false),
@@ -65,9 +72,12 @@ export function useGetSaveGeneralInformationSchema() {
             otherSystems: yup.string().nullable().default(null),
 
             // Thông số cài đặt
-            setpointTemperature: yup.number().nullable().default(null),
-            setpointHumidity: yup.number().nullable().default(null),
-            setpointLightingLevel: yup.number().nullable().default(null),
+            setpointTemperature: nullableNumber
+                .min(20, 'Nhiệt độ phải >= 20°C')
+                .max(30, 'Nhiệt độ phải <= 30°C')
+                .default(null),
+            setpointHumidity: nullableNumber.min(0, 'Độ ẩm phải >= 0%').max(100, 'Độ ẩm phải <= 100%').default(null),
+            setpointLightingLevel: nullableNumber.min(0, 'Mức chiếu sáng phải >= 0 lx').default(null),
 
             // Zones
             governmentSystemZones: yup.array().of(governmentZoneSchema).default([]),
@@ -78,18 +88,17 @@ export function useGetSaveGeneralInformationSchema() {
             climateZone: yup.string().nullable().default(null),
 
             // Diện tích (m²)
-            totalFloorArea: yup.number().min(0, 'Diện tích phải >= 0').required('Tổng diện tích sàn là bắt buộc'),
-            aboveGroundFloorArea: yup
-                .number()
+            totalFloorArea: nullableNumber.min(0, 'Diện tích phải >= 0').required('Tổng diện tích sàn là bắt buộc'),
+            aboveGroundFloorArea: nullableNumber
                 .min(0, 'Diện tích phải >= 0')
                 .required('Diện tích trên mặt đất là bắt buộc'),
-            basementFloorArea: yup.number().min(0, 'Diện tích phải >= 0').required('Diện tích tầng hầm là bắt buộc'),
-            outdoorParkingArea: yup.number().min(0).default(0),
-            indoorParkingArea: yup.number().min(0).default(0),
-            dataCenterArea: yup.number().min(0).default(0),
-            nonRentableArea: yup.number().min(0).default(0),
-            totalRentableArea: yup.number().min(0).default(0),
-            vacantArea: yup.number().min(0).default(0),
+            basementFloorArea: nullableNumber.min(0, 'Diện tích phải >= 0').required('Diện tích tầng hầm là bắt buộc'),
+            outdoorParkingArea: nullableNumber.min(0).default(0),
+            indoorParkingArea: nullableNumber.min(0).default(0),
+            dataCenterArea: nullableNumber.min(0).default(0),
+            nonRentableArea: nullableNumber.min(0).default(0),
+            totalRentableArea: nullableNumber.min(0).default(0),
+            vacantArea: nullableNumber.min(0).default(0),
         });
     }, []);
 
