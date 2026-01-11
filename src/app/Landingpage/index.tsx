@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import ContentSector from '../components/LandingPage/ContentSector';
+import ContentSector from './components/ContentSector';
 
 function LandingPage() {
     return (

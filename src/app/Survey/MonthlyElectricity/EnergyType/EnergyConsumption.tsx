@@ -1,7 +1,7 @@
-import { useFormContext, useFieldArray } from 'react-hook-form';
-import DropdownPickerYear from '../DropdownComponenets/DropdownYear';
-import type { FormMonthlyElectricity } from '../../app/Survey/MonthlyElectricity/type';
-import { generateDefaultYearConsumption } from '../../app/Survey/MonthlyElectricity/useSchema';
+import { useFieldArray, useFormContext } from 'react-hook-form';
+import DropdownPickerYear from '../../../../components/DropdownComponent/DropdownYear';
+import type { FormMonthlyElectricity } from '../type';
+import { generateDefaultYearConsumption } from '../useSchema';
 
 function EnergyConsumption() {
     const { watch, setValue, register, control } = useFormContext<FormMonthlyElectricity>();

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
-import DropdownTimeRange from '../DropdownComponenets/DropdownTimeRange';
+import DropdownTimeRange from '../DropdownComponent/DropdownTimeRange';
 import InputField from '../InputField';
 
 const ZONES = [

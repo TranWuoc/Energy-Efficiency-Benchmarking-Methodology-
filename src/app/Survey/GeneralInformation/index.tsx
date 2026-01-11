@@ -1,16 +1,16 @@
-import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+import Checkbox from '../../../components/CheckboxComponent';
+import DropdownItems from '../../../components/DropdownComponent/DropdownItems';
 import InputField from '../../../components/InputField';
 import CommercialOffice from '../../../components/StyleOffiec/CommercialOffice';
 import GovernmentOffice from '../../../components/StyleOffiec/Government';
-import DropdownItems from '../../../components/DropdownComponenets/DropdownItems';
+import { BUILDING_TYPE_OPTIONS, CONTROL_SYSTEM_OPTIONS } from '../../../constants';
+import { useSurvey } from '../../../contexts/SurveyContext';
 import type { FormSaveGeneralInformation } from './type';
 import { useGetSaveGeneralInformationSchema } from './useSchema';
-import { useSurvey } from '../../../contexts/SurveyContext';
-import { useNavigate } from 'react-router-dom';
-import Checkbox from '../../../components/CheckboxComponent';
-import { BUILDING_TYPE_OPTIONS, CONTROL_SYSTEM_OPTIONS } from '../../../constants';
 
 function GeneralInformation() {
     const schema = useGetSaveGeneralInformationSchema();
@@ -168,7 +168,7 @@ function GeneralInformation() {
                         <div className="flex justify-end gap-4">
                             <button
                                 type="submit"
-                                className="rounded bg-blue-500 px-6 py-3 text-white hover:bg-blue-600"
+                                className="rounded bg-green-600 px-6 py-3 text-white hover:bg-green-700 disabled:cursor-not-allowed"
                             >
                                 Tiếp theo →
                             </button>

@@ -1,4 +1,4 @@
-import type { TimeRange } from '../../../api/building.type';
+import type { TimeRange } from '../../../api/buildings/building.type';
 
 // Space Zone Operation (matching Backend BuildingOperationSchema)
 export interface SpaceZoneOperation {

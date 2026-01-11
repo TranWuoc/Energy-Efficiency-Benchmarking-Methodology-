@@ -1,13 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { useFormContext, useFieldArray } from 'react-hook-form';
-import InputField from '../InputField';
-import {
-    ENERGY_SOURCE_OPTIONS,
-    type EnergySourceType,
-    type FormMonthlyElectricity,
-} from '../../app/Survey/MonthlyElectricity/type';
-import DropdownPickerYear from '../DropdownComponenets/DropdownYear';
-import { generateDefaultRenewableProduction } from '../../app/Survey/MonthlyElectricity/useSchema';
+import { useFieldArray, useFormContext } from 'react-hook-form';
+import DropdownPickerYear from '../../../../components/DropdownComponent/DropdownYear';
+import InputField from '../../../../components/InputField';
+import { ENERGY_SOURCE_OPTIONS, type EnergySourceType, type FormMonthlyElectricity } from '../type';
+import { generateDefaultRenewableProduction } from '../useSchema';
 
 function EnergyProduction() {
     const { watch, setValue, control, register } = useFormContext<FormMonthlyElectricity>();

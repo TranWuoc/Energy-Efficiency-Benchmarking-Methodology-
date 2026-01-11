@@ -1,15 +1,15 @@
-import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+import DropdownItems from '../../../components/DropdownComponent/DropdownItems';
+import DropdownTimeRange from '../../../components/DropdownComponent/DropdownTimeRange';
 import InputField from '../../../components/InputField';
+import { UTILISATION_LEVEL_OPTIONS } from '../../../constants';
+import { useSurvey } from '../../../contexts/SurveyContext';
 import type { FormOperatorBuilding, SpaceZoneOperation } from './type';
 import { SPACE_ZONE_OPTIONS, getZoneLabelByCode } from './type';
-import { useGetOperatorBuildingSchema, generateDefaultSpaceZone } from './useSchema';
-import * as yup from 'yup';
-import { useNavigate } from 'react-router-dom';
-import { useSurvey } from '../../../contexts/SurveyContext';
-import DropdownItems from '../../../components/DropdownComponenets/DropdownItems';
-import { UTILISATION_LEVEL_OPTIONS } from '../../../constants';
-import DropdownTimeRange from '../../../components/DropdownComponenets/DropdownTimeRange';
+import { generateDefaultSpaceZone, useGetOperatorBuildingSchema } from './useSchema';
 
 function OperatorBuilding() {
     const navigate = useNavigate();
@@ -157,7 +157,7 @@ function OperatorBuilding() {
                             </button>
                             <button
                                 type="submit"
-                                className="rounded bg-blue-500 px-6 py-3 text-white hover:bg-blue-600"
+                                className="rounded bg-green-600 px-6 py-3 text-white hover:bg-green-700 disabled:cursor-not-allowed"
                             >
                                 Tiếp theo →
                             </button>

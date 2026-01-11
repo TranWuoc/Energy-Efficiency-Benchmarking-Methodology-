@@ -2,7 +2,6 @@ import { createContext, useContext, useState, type ReactNode } from 'react';
 import type { FormSaveGeneralInformation } from '../app/Survey/GeneralInformation/type';
 import type { FormOperatorBuilding } from '../app/Survey/OperatorBuilding/type';
 import type { FormMonthlyElectricity } from '../app/Survey/MonthlyElectricity/type';
-
 // Tổng hợp tất cả data từ các form
 export interface SurveyData {
     generalInformation: Partial<FormSaveGeneralInformation>;
@@ -15,7 +14,6 @@ interface SurveyContextType {
     updateGeneralInformation: (data: FormSaveGeneralInformation) => void;
     updateOperatorBuilding: (data: FormOperatorBuilding) => void;
     updateMonthlyElectricity: (data: FormMonthlyElectricity) => void;
-    submitAllData: () => Promise<void>;
     resetSurvey: () => void;
     isComplete: () => boolean;
 }
@@ -59,25 +57,6 @@ export function SurveyProvider({ children }: { children: ReactNode }) {
         return hasGeneral && hasOperator && hasMonthly;
     };
 
-    const submitAllData = async () => {
-        if (!isComplete()) {
-            console.warn('Survey chưa hoàn thành!');
-            return;
-        }
-
-        // Gộp tất cả data thành 1 payload
-        const payload = {
-            ...surveyData.generalInformation,
-            ...surveyData.operatorBuilding,
-            ...surveyData.monthlyElectricity,
-        };
-
-        console.log('📤 Submitting all survey data:', payload);
-
-        // TODO: Call API
-        // await api.submitSurvey(payload);
-    };
-
     const resetSurvey = () => {
         setSurveyData(initialSurveyData);
     };
@@ -89,7 +68,6 @@ export function SurveyProvider({ children }: { children: ReactNode }) {
                 updateGeneralInformation,
                 updateOperatorBuilding,
                 updateMonthlyElectricity,
-                submitAllData,
                 resetSurvey,
                 isComplete,
             }}

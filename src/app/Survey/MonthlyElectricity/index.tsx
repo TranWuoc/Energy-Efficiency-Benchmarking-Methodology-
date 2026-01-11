@@ -1,23 +1,32 @@
-import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
-import EnergyProduction from '../../../components/EnergyType/EnergyProduction';
-import EnergyConsumption from '../../../components/EnergyType/EnergyConsumption';
-import { useGetMonthlyElectricitySchema } from './useSchema';
-import type { FormMonthlyElectricity } from './type';
+import { FormProvider, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+import { useCreateBuilding } from '../../../api/buildings/buidlings.api';
+import type { Building } from '../../../api/buildings/building.type';
+import { getEPByBuildingId } from '../../../api/EP/ep.api';
 import { useSurvey } from '../../../contexts/SurveyContext';
+import { toastAction, toastError } from '../../../utils/toast';
+import EnergyConsumption from './EnergyType/EnergyConsumption';
+import EnergyProduction from './EnergyType/EnergyProduction';
+import type { FormMonthlyElectricity } from './type';
+import { useGetMonthlyElectricitySchema } from './useSchema';
 
 function MonthlyElectricity() {
     const [activeTab, setActiveTab] = useState('consumed');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const navigate = useNavigate();
-    const { updateMonthlyElectricity, surveyData, submitAllData, isComplete } = useSurvey();
+    const { updateMonthlyElectricity, surveyData } = useSurvey();
     const schema = useGetMonthlyElectricitySchema();
     const methods = useForm<FormMonthlyElectricity>({
         resolver: yupResolver(schema as yup.ObjectSchema<FormMonthlyElectricity>),
         defaultValues: surveyData.monthlyElectricity,
     });
+
+    const createBuilding = useCreateBuilding();
 
     const onSubmit = async (data: FormMonthlyElectricity) => {
         console.log(data);
@@ -30,9 +39,28 @@ function MonthlyElectricity() {
         const currentData = methods.getValues();
         updateMonthlyElectricity(currentData);
 
-        await submitAllData();
+        const allData = {
+            generalInfo: surveyData.generalInformation,
+            operation: surveyData.operatorBuilding,
+            consumedElectricity: currentData.consumedElectricity || [],
+            producedElectricity: currentData.producedElectricity || [],
+        } as Omit<Building, 'buildingId'>;
 
-        console.log();
+        const toastId = toast.loading('Đang gửi khảo sát...', {
+            position: 'top-right',
+        });
+
+        try {
+            const result = await createBuilding.mutateAsync(allData);
+            console.log('🚀 ~ handleSubmit ~ result:', result);
+            toastAction('Gửi khảo sát thành công!', {
+                label: 'Xem chỉ số EP',
+                onClick: () => getEPByBuildingId(result.building.buildingId),
+            });
+        } catch (error) {
+            toastError('Gửi khảo sát thất bại. Vui lòng thử lại.');
+            console.error('Lỗi khi tạo building:', error);
+        }
     };
 
     return (
@@ -79,9 +107,36 @@ function MonthlyElectricity() {
                             <button
                                 type="button"
                                 onClick={handleSubmit}
-                                className="rounded bg-green-600 px-6 py-3 text-white hover:bg-green-700"
+                                disabled={isSubmitting}
+                                className="flex items-center gap-2 rounded bg-green-600 px-6 py-3 text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
                             >
-                                ✓ Hoàn thành & Gửi
+                                {isSubmitting ? (
+                                    <>
+                                        <svg
+                                            className="h-5 w-5 animate-spin"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <circle
+                                                className="opacity-25"
+                                                cx="12"
+                                                cy="12"
+                                                r="10"
+                                                stroke="currentColor"
+                                                strokeWidth="4"
+                                            />
+                                            <path
+                                                className="opacity-75"
+                                                fill="currentColor"
+                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                            />
+                                        </svg>
+                                        <span>Đang gửi...</span>
+                                    </>
+                                ) : (
+                                    'Xem chỉ số năng lượng toà nhà →'
+                                )}
                             </button>
                         </div>
                     </form>

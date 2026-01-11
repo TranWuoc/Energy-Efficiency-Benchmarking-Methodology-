@@ -24,7 +24,10 @@ function DropdownMenu({ optionLabel, options }: DropdownMenuProps) {
                 onClick={() => setOpen((prev) => !prev)}
             >
                 <span>{optionLabel}</span>
-                <img src="/arrowDown.svg" className="h-[20px] w-[20px]" />
+                <img
+                    src="/arrowDown.svg"
+                    className={`pointer-events-none absolute right-2 h-[20px] w-[20px] transition-transform ${open ? 'rotate-180' : ''}`}
+                />
             </div>
             {open && (
                 <div className=" z-50 bg-[#ffff] py-[20px]">

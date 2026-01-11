@@ -1,4 +1,4 @@
-import type { TimeRange } from '../../../api/building.type';
+import type { TimeRange } from '../../../api/buildings/building.type';
 
 // Government Office Zone
 export interface GovernmentSystemZone {

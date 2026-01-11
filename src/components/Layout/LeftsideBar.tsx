@@ -1,7 +1,7 @@
-import DropdownMenu from '../DropdownComponenets/DropdownMenu';
 import { useNavigate } from 'react-router-dom';
+import DropdownMenu from '../DropdownComponent/DropdownMenu';
 
-function LeftsideBar() {
+function LeftSidebar() {
     const navigate = useNavigate();
 
     return (
@@ -16,10 +16,16 @@ function LeftsideBar() {
                         { label: 'Năng lượng điện hàng tháng', value: '3', to: '/home/monthly-electricity' },
                     ]}
                 />
-                <DropdownMenu optionLabel="My Label" options={[]} />
+                <DropdownMenu
+                    optionLabel="Chỉ số năng lượng"
+                    options={[
+                        { label: 'Danh sách chỉ số năng lượng các toà nhà', value: '2', to: '/home' },
+                        { label: 'Thống kê chỉ số năng lượng', value: '3', to: '/home' },
+                    ]}
+                />
             </div>
         </div>
     );
 }
 
-export default LeftsideBar;
+export default LeftSidebar;

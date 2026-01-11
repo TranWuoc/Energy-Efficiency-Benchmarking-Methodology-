@@ -116,11 +116,10 @@ interface RenewableProduction {
 
 // Main Building Type
 interface Building {
-    _id?: string;
     buildingId: string;
     generalInfo: BuildingGeneralInfo;
     operation?: BuildingOperation;
-    consumedElectricity: ElectricityConsumption[]; // CẤU TRÚC MỚI
+    consumedElectricity: ElectricityConsumption[];
     producedElectricity?: RenewableProduction[];
     createdAt?: string;
     updatedAt?: string;

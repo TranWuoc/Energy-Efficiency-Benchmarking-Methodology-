@@ -1,4 +1,4 @@
-import type { DropdownOption } from '../components/DropdownComponenets/DropdownItems';
+import type { DropdownOption } from '../components/DropdownComponent/DropdownItems';
 
 // Loại tòa nhà
 export const BUILDING_TYPE_OPTIONS: DropdownOption<number>[] = [

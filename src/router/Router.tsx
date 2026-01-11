@@ -1,14 +1,16 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import '../index.css';
-import MainLayout from '../layouts/MainLayout.tsx';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Home from '../app/Home.tsx';
-import MonthlyElectricity from '../app/Survey/MonthlyElectricity/index.tsx';
-import LandingPageLayout from '../layouts/LandingpageLayout.tsx';
-import GeneralInformation from '../app/Survey/GeneralInformation/index.tsx';
-import OperatorBuilding from '../app/Survey/OperatorBuilding/index.tsx';
+import { createBrowserRouter } from 'react-router-dom';
 import Buildings from '../app/Buildings/index.tsx';
+import DashboardPage from '../app/Dashboard/index.tsx';
+import EnergyPerformance from '../app/EnergyPerformance/index.tsx';
+import Home from '../app/Home.tsx';
+import LoginPage from '../app/Login/index.tsx';
+import GeneralInformation from '../app/Survey/GeneralInformation/index.tsx';
+import MonthlyElectricity from '../app/Survey/MonthlyElectricity/index.tsx';
+import OperatorBuilding from '../app/Survey/OperatorBuilding/index.tsx';
+import '../index.css';
+import AdminLayout from '../layouts/AdminLayout.tsx';
+import LandingPageLayout from '../layouts/LandingpageLayout.tsx';
+import MainLayout from '../layouts/MainLayout.tsx';
 
 const router = createBrowserRouter([
     {
@@ -40,6 +42,24 @@ const router = createBrowserRouter([
     {
         path: '/buildings',
         element: <Buildings />,
+    },
+    {
+        path: '/energy-performances',
+        element: <EnergyPerformance />,
+    },
+    {
+        path: '/login',
+        element: <LoginPage />,
+    },
+    {
+        path: '/dashboard',
+        element: <AdminLayout />,
+        children: [
+            {
+                index: true,
+                element: <DashboardPage />,
+            },
+        ],
     },
 ]);
 

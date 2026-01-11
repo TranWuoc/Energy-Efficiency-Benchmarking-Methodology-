@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import LandingPage from '../app/LandingPage';
+import LandingPage from '../app/Landingpage';
 import Footer from '../components/Layout/Footer';
 import Header from '../components/Layout/Header';
 
