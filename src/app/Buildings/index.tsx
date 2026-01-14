@@ -1,4 +1,4 @@
-import { getBuildings } from '../../api/buildings/buidlings.api';
+import { getBuildings } from '../../api/buildings/buildings.api';
 
 export default function Buildings() {
     return (

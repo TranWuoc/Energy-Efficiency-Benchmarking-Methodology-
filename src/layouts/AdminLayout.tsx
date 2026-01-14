@@ -17,16 +17,18 @@ import {
 import React from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
-import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+import OfflineBoltIcon from '@mui/icons-material/OfflineBolt';
 import SearchIcon from '@mui/icons-material/Search';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import { ROLE_LABEL } from '../constants';
+import { getCurrentAdmin } from '../utils/auth';
 
 const SidebarItem = ({ icon, label, to }: { icon: React.ReactNode; label: string; to: string }) => {
     const navigate = useNavigate();
@@ -54,8 +56,10 @@ const SidebarItem = ({ icon, label, to }: { icon: React.ReactNode; label: string
 
 const AdminLayout = () => {
     const navigate = useNavigate();
+    const admin = getCurrentAdmin();
 
     const handleLogout = () => {
+        localStorage.removeItem('currentAdmin');
         localStorage.removeItem('accessToken');
         navigate('/login');
     };
@@ -90,14 +94,17 @@ const AdminLayout = () => {
                 }}
             >
                 <Stack direction="row" alignItems="center" spacing={1} sx={{ px: 1 }}>
-                    <LocalHospitalOutlinedIcon />
-                    <Typography fontWeight={900}>Healthcare</Typography>
+                    <img src="/iconTab.svg" alt="Logo" width={30} />
+                    <Typography fontWeight={900} fontSize={50}>
+                        EEBM
+                    </Typography>
                 </Stack>
 
                 <List sx={{ px: 0 }}>
                     <SidebarItem icon={<DashboardIcon />} label="Dashboard" to="/admin/dashboard" />
-                    <SidebarItem icon={<PeopleAltOutlinedIcon />} label="Patients" to="/admin/patients" />
-                    <SidebarItem icon={<EventOutlinedIcon />} label="Appointment" to="/admin/appointments" />
+                    <SidebarItem icon={<AccountBalanceIcon />} label="Buildings" to="/admin/buildings" />
+                    <SidebarItem icon={<OfflineBoltIcon />} label="Energy Performance" to="/admin/energy-performance" />
+                    <SidebarItem icon={<TrendingUpIcon />} label="Benchmarking" to="/admin/Benchmarking" />
                     <SidebarItem icon={<AssessmentOutlinedIcon />} label="Report" to="/admin/reports" />
                     <SidebarItem icon={<SettingsOutlinedIcon />} label="Setting" to="/admin/settings" />
                 </List>
@@ -200,17 +207,22 @@ const AdminLayout = () => {
 
                         <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
 
-                        <Stack direction="row" alignItems="center" spacing={1.2}>
-                            <Avatar sx={{ width: 34, height: 34 }} />
-                            <Box>
-                                <Typography fontWeight={900} fontSize={13}>
-                                    Cameron Williamson
-                                </Typography>
-                                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 800 }}>
-                                    UI Designer
-                                </Typography>
+                        {admin && (
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                                <Avatar sx={{ width: 32, height: 32 }}>
+                                    {(admin.fullName?.[0] ?? admin.username?.[0] ?? 'A').toUpperCase()}
+                                </Avatar>
+
+                                <Box sx={{ lineHeight: 1.1 }}>
+                                    <Typography variant="body2" sx={{ fontWeight: 800 }}>
+                                        {admin.fullName || admin.username}
+                                    </Typography>
+                                    <Typography variant="caption" color="text.secondary">
+                                        {ROLE_LABEL[admin.role] ?? admin.role}
+                                    </Typography>
+                                </Box>
                             </Box>
-                        </Stack>
+                        )}
                     </Stack>
                 </Stack>
 

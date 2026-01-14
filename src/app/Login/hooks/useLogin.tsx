@@ -3,31 +3,31 @@ import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../../api/auth/auth.api';
+import type { LoginResponse } from '../../../api/auth/auth.type';
 import { toastAction } from '../../../utils/toast';
-
-type LoginPayload = {
-    username: string;
-    password: string;
-};
-
-type LoginResponse = {
-    data: {
-        token: string;
-        admin: any;
-    };
-    message: string;
-    success: boolean;
-};
 
 export const useLogin = () => {
     const navigate = useNavigate();
 
-    return useMutation<LoginResponse, any, LoginPayload>({
-        mutationFn: ({ username, password }) => login(username, password),
+    return useMutation({
+        mutationFn: (payload: { username: string; password: string }) => login(payload.username, payload.password),
 
-        onSuccess: (data) => {
-            // ✅ Lưu token
-            localStorage.setItem('accessToken', data.data.token);
+        onSuccess: (res: LoginResponse) => {
+            if (!res?.success) {
+                toast.error(res?.message ?? 'Đăng nhập thất bại');
+                return;
+            }
+
+            const token = res.data?.token;
+            const admin = res.data?.admin;
+
+            if (!token || !admin) {
+                toast.error('Thiếu dữ liệu token/admin từ server');
+                return;
+            }
+
+            localStorage.setItem('accessToken', token);
+            localStorage.setItem('currentAdmin', JSON.stringify(admin));
 
             let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
@@ -35,12 +35,12 @@ export const useLogin = () => {
                 label: 'Đi đến Dashboard',
                 onClick: () => {
                     if (timeoutId) clearTimeout(timeoutId);
-                    navigate('/dashboard');
+                    navigate('/admin/dashboard');
                 },
             });
 
             timeoutId = setTimeout(() => {
-                navigate('/dashboard');
+                navigate('/admin/dashboard');
             }, 3000);
         },
 

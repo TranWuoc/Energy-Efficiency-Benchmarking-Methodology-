@@ -1,43 +1,127 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { AppBar, Box, Button, Container, Toolbar } from '@mui/material';
+import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-function Header() {
-    const NAV_ITEMS = [
-        { label: 'Về ứng dụng', path: '/about' },
-        { label: 'Khảo sát toà nhà', path: '/home/general' },
-        { label: 'Bảng giá', path: '/pricing' },
-        { label: 'Blog', path: '/blog' },
-    ];
+type NavKey = 'Trang chủ' | 'Khảo sát' | 'Bài viết' | 'Toà nhà';
 
+export default function Header() {
+    const [active, setActive] = React.useState<NavKey>('Trang chủ');
     const navigate = useNavigate();
-
     return (
-        <div className="flex h-[100px] w-full items-center gap-3">
-            <div className="flex w-[400px] items-center justify-center">
-                <img src="/Logo.svg" alt="logo" className="h-[50px] w-[200px]" />
-            </div>
-            <div className="mr-[200px] flex flex-1 items-center justify-end">
-                <div className=" mr-[200px] flex gap-10">
-                    {NAV_ITEMS.map((item) => (
-                        <Link
-                            key={item.path}
-                            to={item.path}
-                            className="cursor-pointer text-[20px] hover:text-[#14B86E] hover:underline"
-                        >
-                            {item.label}
-                        </Link>
-                    ))}
-                </div>
-                <div className=" hover:text-teal-50 ">
-                    <button
-                        className="flex cursor-pointer items-center rounded-3xl border  border-[#14B86E] px-20 py-2 font-bold text-[#14B86E] hover:bg-[#14B86E] hover:text-white"
-                        onClick={() => navigate('/login')}
+        <AppBar
+            position="static"
+            elevation={0}
+            sx={{
+                bgcolor: 'transparent',
+                color: '#111',
+            }}
+        >
+            <Container maxWidth="lg">
+                <Toolbar
+                    disableGutters
+                    sx={{
+                        height: 84,
+                        px: { xs: 2, md: 3 },
+                    }}
+                >
+                    {/* Left: logo */}
+                    <Box sx={{ display: 'flex', alignItems: 'left', gap: 1.2, flex: '0 0 auto' }}>
+                        <Box
+                            component="img"
+                            src="/Logo.svg"
+                            alt="EEBM"
+                            sx={{
+                                height: 50,
+                                width: '100%',
+                                display: { xs: 'none', sm: 'block' },
+                            }}
+                            onError={(e) => {
+                                // fallback nếu chưa có svg
+                                (e.currentTarget as HTMLImageElement).style.display = 'none';
+                            }}
+                        />
+                    </Box>
+
+                    {/* Center nav */}
+                    <Box
+                        sx={{
+                            flex: 1,
+                            display: { xs: 'none', md: 'flex' },
+                            justifyContent: 'center',
+                            gap: 2.5,
+                        }}
                     >
-                        Đăng nhập
-                    </button>
-                </div>
-            </div>
-        </div>
+                        <NavItem
+                            label="Trang chủ"
+                            active={active === 'Trang chủ'}
+                            onClick={() => {
+                                setActive('Trang chủ');
+                                navigate('/');
+                            }}
+                        />
+                        <NavItem
+                            label="Khoả sát"
+                            active={active === 'Khảo sát'}
+                            onClick={() => {
+                                setActive('Khảo sát');
+                                navigate('/home/general');
+                            }}
+                        />
+                        <NavItem
+                            label="Bài viết"
+                            active={active === 'Bài viết'}
+                            onClick={() => setActive('Bài viết')}
+                        />
+                        <NavItem label="Toà nhà" active={active === 'Toà nhà'} onClick={() => setActive('Toà nhà')} />
+                    </Box>
+
+                    {/* Right menu icon */}
+                    <Box sx={{ flex: '0 0 auto', display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button
+                            variant="outlined"
+                            sx={{
+                                textTransform: 'none',
+                                fontWeight: 700,
+                                px: 3,
+                                py: 1,
+                                borderRadius: 999,
+                                borderColor: '#28A745',
+                                color: '#28A745',
+                                '&:hover': {
+                                    borderColor: '#679540',
+                                    backgroundColor: 'rgb(128, 194, 73)',
+                                },
+                            }}
+                            onClick={() => {
+                                navigate('/login');
+                            }}
+                        >
+                            Đăng nhập
+                        </Button>
+                    </Box>
+                </Toolbar>
+            </Container>
+        </AppBar>
     );
 }
 
-export default Header;
+function NavItem(props: { label: string; active?: boolean; onClick?: () => void }) {
+    const { label, active, onClick } = props;
+
+    return (
+        <Button
+            onClick={onClick}
+            disableRipple
+            sx={{
+                textTransform: 'none',
+                fontWeight: 500,
+                color: active ? '#111' : 'rgba(0,0,0,0.55)',
+                fontSize: 16,
+                px: 1.2,
+                '&:hover': { bgcolor: 'transparent', color: '#111' },
+            }}
+        >
+            {label}
+        </Button>
+    );
+}
