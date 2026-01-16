@@ -1,3 +1,4 @@
+import type { BuildingFormValues } from '../../app/Usage/NewSurvey/type/type';
 import http from '../../utils/http';
 import type { Building, BuildingsResponse } from './building.type';
 
@@ -11,8 +12,8 @@ export const getDetailBuilding = async (buildingId: string) => {
     return res.data;
 };
 
-export const createBuilding = async (data: Omit<Building, 'buildingId'>) => {
-    const response = await http.post<Building>('/buildings', data);
+export const createBuilding = async (data: BuildingFormValues) => {
+    const response = await http.post<BuildingFormValues>('/buildings', data);
     const newBuilding = response.data;
 
     return {

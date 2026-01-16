@@ -62,8 +62,8 @@ export const toastSuccess = (message: string, options?: ToastOptions) =>
 /**
  * Toast error
  */
-export const toastError = (message: string, options?: ToastOptions) =>
-    toast.error(message, {
+export const toastError = (message: string, options?: ToastOptions, errorDetail?: string) =>
+    toast.error(errorDetail ? `${message}: ${errorDetail}` : message, {
         ...baseOptions,
         ...options,
     });

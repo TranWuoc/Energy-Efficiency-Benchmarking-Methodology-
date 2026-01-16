@@ -1,25 +1,19 @@
-// building.type.tsx
-
-// ===== Common =====
 export interface TimeRange {
     from: string | null;
     to: string | null;
 }
 
 export interface MonthlyConsumption {
-    month: number; // 1-12
+    month: number;
     energyConsumption: number; // kWh
 }
 
-export type DataSource = 1 | 2; // 1 = Hoá đơn, 2 = Công tơ / Báo cáo hệ thống
-
+export type DataSource = 1 | 2;
 export interface ElectricityConsumption {
     year: number;
     dataSource: DataSource;
     monthlyData: MonthlyConsumption[];
 }
-
-// ===== System Zones (BMS schedule per system zone) =====
 export interface SystemZoneOperation {
     zoneCode: string;
     hvac?: TimeRange;
@@ -28,7 +22,6 @@ export interface SystemZoneOperation {
     camera?: TimeRange;
 }
 
-// ===== Operation Zones (NEW model) =====
 export type UtilisationLevel = 'Thấp' | 'Trung bình' | 'Cao';
 
 export type GovernmentZoneCode =
@@ -49,33 +42,27 @@ export type CommercialZoneCode =
     | 'commercial_area'
     | 'indoor_parking';
 
-export interface BaseOperationZone {
-    zoneCode: string;
+export type OperationZoneCode = GovernmentZoneCode | CommercialZoneCode;
+
+export interface SpaceZoneOperation {
+    zoneCode: OperationZoneCode;
+
+    isRented?: boolean;
+    rentableArea?: number | null;
+
     weekday?: TimeRange;
     saturday?: TimeRange;
     sunday?: TimeRange;
+
     utilisationLevel?: UtilisationLevel;
     averagePeople?: number;
     note?: string;
-    isRented?: boolean;
-    rentableArea?: number | null;
-}
-
-export interface GovernmentOperationZone extends BaseOperationZone {
-    zoneCode: GovernmentZoneCode;
-    isRented: false;
-}
-
-export interface CommercialOperationZone extends BaseOperationZone {
-    zoneCode: CommercialZoneCode;
-    isRented: boolean;
 }
 
 export interface BuildingOperation {
-    governmentZones?: GovernmentOperationZone[];
-    commercialZones?: CommercialOperationZone[];
+    governmentZones?: SpaceZoneOperation[];
+    commercialZones?: SpaceZoneOperation[];
 }
-
 // ===== Renewable =====
 export interface SolarEnergy {
     isSelected: boolean;

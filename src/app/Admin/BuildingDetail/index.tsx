@@ -13,11 +13,7 @@ import {
     Typography,
 } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import {
-    type CommercialOperationZone,
-    type GovernmentOperationZone,
-    type UtilisationLevel,
-} from '../../../api/buildings/building.type';
+import { type UtilisationLevel } from '../../../api/buildings/building.type';
 import { BUILDING_TYPE_LABEL } from '../../../constants';
 import { convertTechnicalSystems } from '../../../utils/technicalSystem';
 import { useBuildingDetail } from '../Buildings/hooks/useBuildings';
@@ -135,7 +131,7 @@ export default function BuildingDetailPage() {
                     gap: 2,
                 }}
             >
-                {zones.map((z: GovernmentOperationZone | CommercialOperationZone, idx: number) => {
+                {zones.map((z: any, idx: number) => {
                     const label = getZoneLabel(buildingType, z.zoneCode);
                     const level = z.utilisationLevel;
 
@@ -168,8 +164,9 @@ export default function BuildingDetailPage() {
                                                 size="small"
                                                 label={level}
                                                 sx={{
-                                                    backgroundColor: UTILISATION_CHIP_STYLE[level].bg,
-                                                    color: UTILISATION_CHIP_STYLE[level].color,
+                                                    backgroundColor:
+                                                        UTILISATION_CHIP_STYLE[level as UtilisationLevel].bg,
+                                                    color: UTILISATION_CHIP_STYLE[level as UtilisationLevel].color,
                                                     fontWeight: 600,
                                                 }}
                                             />

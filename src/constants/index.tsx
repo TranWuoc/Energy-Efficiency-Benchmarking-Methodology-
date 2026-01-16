@@ -2,7 +2,7 @@ import type { EPNormalisedForDisplay } from '../api/EP/ep.type';
 import type { DropdownOption } from '../components/DropdownComponent/DropdownItems';
 
 // Loại tòa nhà
-export const BUILDING_TYPE_OPTIONS: DropdownOption<number>[] = [
+export const BUILDING_TYPE_OPTIONS = [
     { label: 'Văn phòng công sở nhà nước', value: 1 },
     { label: 'Văn phòng thương mại', value: 2 },
 ];

@@ -64,7 +64,7 @@ export default function Header() {
                             active={active === 'Khảo sát'}
                             onClick={() => {
                                 setActive('Khảo sát');
-                                navigate('/home/general');
+                                navigate('/survey');
                             }}
                         />
                         <NavItem

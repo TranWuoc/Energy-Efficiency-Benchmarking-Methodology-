@@ -92,6 +92,7 @@ function ContactRow(props: { icon: React.ReactNode; primary: string; secondary?:
 
 export default function Footer() {
     const navigate = useNavigate();
+
     return (
         <Box
             component="footer"
@@ -102,7 +103,6 @@ export default function Footer() {
             }}
         >
             <Container maxWidth="xl">
-                {/* Outer rounded panel */}
                 <Box
                     sx={{
                         borderRadius: 6,
@@ -112,22 +112,8 @@ export default function Footer() {
                         overflow: 'hidden',
                     }}
                 >
-                    {/* Top CTA */}
                     <Box sx={{ px: { xs: 3, md: 6 }, pt: { xs: 4, md: 6 }, pb: { xs: 3, md: 4 } }}>
                         <Stack spacing={1.2} alignItems="center" textAlign="center">
-                            {/* <Box
-                                sx={{
-                                    width: 56,
-                                    height: 56,
-                                    borderRadius: 3,
-                                    bgcolor: '#0B1020',
-                                    display: 'grid',
-                                    placeItems: 'center',
-                                    color: 'white',
-                                }}
-                            >
-                                <AutoAwesomeRoundedIcon />
-                            </Box> */}
                             <img src="/Logo.svg" alt="Logo" className="h-[50px]" />
 
                             <Typography sx={{ fontWeight: 900, fontSize: { xs: 28, md: 40 } }}>
@@ -151,7 +137,7 @@ export default function Footer() {
                                     fontWeight: 700,
                                     boxShadow: 'none',
                                 }}
-                                onClick={() => navigate('home/general')}
+                                onClick={() => navigate('survey')}
                             >
                                 Tham gia khảo sát
                             </Button>

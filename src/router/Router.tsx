@@ -6,42 +6,38 @@ import EPPage from '../app/Admin/EnergyPerformance/index.tsx';
 import EPDetailPage from '../app/Admin/EPDetail/index.tsx';
 import Buildings from '../app/Buildings/index.tsx';
 import EnergyPerformance from '../app/EnergyPerformance/index.tsx';
-import Home from '../app/Home.tsx';
+import LandingPage from '../app/LandingPage/index.tsx';
 import LoginPage from '../app/Login/index.tsx';
-import GeneralInformation from '../app/Usage/Survey/GeneralInformation/index.tsx';
-import MonthlyElectricity from '../app/Usage/Survey/MonthlyElectricity/index.tsx';
-import OperatorBuilding from '../app/Usage/Survey/OperatorBuilding/index.tsx';
+import CreateBuildingWizard from '../app/Usage/NewSurvey/CreateBuildingWizard.tsx';
 import '../index.css';
 import AdminLayout from '../layouts/AdminLayout.tsx';
-import LandingPageLayout from '../layouts/LandingpageLayout.tsx';
 import MainLayout from '../layouts/MainLayout.tsx';
 import { ProtectRouter } from './ProtectRouter.tsx';
+import RouterErrorPage from './RouterErrorPage.tsx';
 
 const router = createBrowserRouter([
+    // { path: 'survey', element: <div style={{ padding: 24 }}>SURVEY OK</div> },
     {
         path: '/',
-        element: <LandingPageLayout />,
-    },
-    {
-        path: '/home',
         element: <MainLayout />,
+        errorElement: <RouterErrorPage />,
         children: [
             {
                 index: true,
-                element: <Home />,
+                element: <LandingPage />,
             },
             {
-                path: 'general',
-                element: <GeneralInformation />,
+                path: 'survey',
+                element: <CreateBuildingWizard />,
             },
-            {
-                path: 'operator',
-                element: <OperatorBuilding />,
-            },
-            {
-                path: 'monthly-electricity',
-                element: <MonthlyElectricity />,
-            },
+            // {
+            //     path: 'survey/operator',
+            //     element: <OperationStep />,
+            // },
+            // {
+            //     path: 'survey/monthly-electricity',
+            //     element: <MonthlyElectricity />,
+            // },
         ],
     },
     {

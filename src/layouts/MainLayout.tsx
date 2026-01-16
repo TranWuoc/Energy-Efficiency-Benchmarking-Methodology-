@@ -1,36 +1,45 @@
+import { Box } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Footer from '../components/Layout/Footer';
-import HeaderLogin from '../components/Layout/HeaderLogin';
-import LeftSidebar from '../components/Layout/LeftSidebar';
-import { SurveyProvider } from '../contexts/SurveyContext';
+import Header from '../components/Layout/Header';
 
-function MainLayout() {
+function LandingPageLayout() {
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 0);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
     return (
-        <SurveyProvider>
-            <div className="flex h-screen overflow-hidden">
-                {/* Sidebar - Fixed */}
-                <aside className=" flex-shrink-0">
-                    <LeftSidebar />
-                </aside>
-
-                {/* Header + Main */}
-                <div className="flex flex-1 flex-col overflow-hidden">
-                    {/* Header - Fixed */}
-                    <header className="w-full flex-shrink-0">
-                        <HeaderLogin />
-                    </header>
-
-                    {/* Main content - Chỉ phần này scroll */}
-                    <main className="flex-1 overflow-y-auto">
-                        <div className="min-h-[calc(100vh-200px)]">
-                            <Outlet />
-                        </div>
-                        <Footer />
-                    </main>
-                </div>
+        <div>
+            <div
+                className={`sticky top-0 z-50 bg-white transition-shadow duration-300 ${scrolled ? 'shadow-md' : 'shadow-none'}`}
+            >
+                <Header />
             </div>
-        </SurveyProvider>
+            {/* MainContent */}
+            <Box
+                id="main-content"
+                sx={{
+                    flex: 1,
+                    overflowY: 'auto',
+                }}
+            >
+                <Outlet />
+            </Box>
+            <div>
+                <Footer />
+            </div>
+        </div>
     );
 }
 
-export default MainLayout;
+export default LandingPageLayout;

@@ -1,6 +1,7 @@
 import { Box, Container, type Theme, useMediaQuery } from '@mui/material';
 import BigImageCard from './components/BigImageCard';
-import HeroCard, { type HeroTab } from './components/HeroCard';
+import type { HeroTab } from './components/HeroCard';
+import HeroCard from './components/HeroCard';
 import SmallProjectCard from './components/SmallProject';
 
 type ProjectCard = {
