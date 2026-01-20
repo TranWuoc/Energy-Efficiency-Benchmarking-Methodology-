@@ -27,6 +27,39 @@ export default function GeneralInformationStep() {
         return getSystemZoneConfig(buildingType);
     }, [buildingType]);
 
+    const zoneBasePath = useMemo(() => {
+        if (buildingType === 1) return 'generalInfo.governmentSystemZones';
+        if (buildingType === 2) return 'generalInfo.commercialOfficeZones';
+        return null;
+    }, [buildingType]);
+
+    const currentZones = useWatch({
+        name: zoneBasePath as any,
+    }) as any[] | undefined;
+
+    useEffect(() => {
+        if (!zoneBasePath || zonesConfig.length === 0) return;
+
+        const normalised = zonesConfig.map((cfgZone) => {
+            const existed = currentZones?.find((z) => z?.zoneCode === cfgZone.zoneCode);
+
+            return (
+                existed ?? {
+                    zoneCode: cfgZone.zoneCode,
+                    hvac: { from: null, to: null },
+                    lighting: { from: null, to: null },
+                    waterHeating: { from: null, to: null },
+                    camera: { from: null, to: null },
+                }
+            );
+        });
+
+        setValue(zoneBasePath as any, normalised, {
+            shouldDirty: false,
+            shouldValidate: false,
+        });
+    }, [zoneBasePath, zonesConfig.length]);
+
     if (!buildingType) return null;
 
     const outdoorParkingArea = useWatch({ name: 'generalInfo.outdoorParkingArea' }) ?? 0;
@@ -66,7 +99,6 @@ export default function GeneralInformationStep() {
 
                     <RHFTextField name="generalInfo.address" label="Địa chỉ" placeholder="Nhập địa chỉ" />
 
-                    {/* 3 columns */}
                     <Box
                         sx={{
                             display: 'grid',
@@ -140,7 +172,7 @@ export default function GeneralInformationStep() {
 
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
                             {zonesConfig.map((zone, idx) => (
-                                <ZoneCard key={zone.zoneCode} zoneIndex={idx} zone={zone} />
+                                <ZoneCard key={zone.zoneCode} zoneIndex={idx} zone={zone} basePath={zoneBasePath!} />
                             ))}
                         </Box>
                     </Stack>

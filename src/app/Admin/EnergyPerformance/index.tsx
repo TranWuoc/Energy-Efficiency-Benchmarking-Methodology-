@@ -19,7 +19,7 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BUILDING_TYPE_LABEL } from '../../../constants';
 import { useEPList } from './hooks/useEPList';
@@ -94,6 +94,10 @@ export default function EPSPage() {
         setRowsPerPage(Number(e.target.value));
         setPage(0);
     };
+
+    useEffect(() => {
+        setPage(0);
+    }, [rows.length, rowsPerPage]);
 
     return (
         <Box sx={{ p: 3 }}>
@@ -194,14 +198,14 @@ export default function EPSPage() {
                                 <TableCell colSpan={6}>Không có dữ liệu.</TableCell>
                             </TableRow>
                         ) : (
-                            pagedRows.map((r) => (
-                                <TableRow key={r.buildingId} hover>
+                            pagedRows.map((r: EPRecord) => (
+                                <TableRow key={r._id}>
+                                    {' '}
                                     <TableCell>{r.buildingName ?? '-'}</TableCell>
                                     <TableCell>{BUILDING_TYPE_LABEL[r.buildingType] ?? r.buildingType}</TableCell>
                                     <TableCell>{r.year ?? '-'}</TableCell>
                                     <TableCell>{typeof r.ep === 'number' ? r.ep.toFixed(2) : '-'}</TableCell>
                                     <TableCell>{formatDateTime(r.computedAt)}</TableCell>
-
                                     <TableCell align="center">
                                         <Tooltip title="Xem chi tiết EP">
                                             <IconButton

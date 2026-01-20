@@ -38,8 +38,8 @@ const COMMERCIAL_ZONES: ZoneConfig[] = [
 type ZoneFieldArrayName = 'operation.governmentZones' | 'operation.commercialZones';
 
 type Props = {
-    title: string; // label hiển thị (vd: "Khu làm việc hành chính")
-    zoneCode: string; // code gửi BE (vd: "admin_work")
+    title: string;
+    zoneCode: string;
     index: number;
     name: ZoneFieldArrayName;
     onRemove?: () => void;

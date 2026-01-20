@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs, { Dayjs } from 'dayjs';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 function toDayjs(v: string | null): Dayjs | null {
     return v ? dayjs(v, 'HH:mm') : null;
@@ -13,11 +13,14 @@ function toString(v: Dayjs | null): string | null {
 type Props = {
     label: string;
     baseName: string;
+    disabled?: boolean;
     placeholder?: string;
 };
 
-export function SystemTimeRow({ label, baseName, placeholder = '--:--' }: Props) {
+export function SystemTimeRow({ label, disabled, baseName, placeholder = '--:--' }: Props) {
     const { control } = useFormContext();
+    const readOnly = useWatch({ name: '__meta.readOnly' }) ?? false;
+    const mergedDisabled = disabled ?? readOnly;
 
     const fromPath = `${baseName}.from`;
     const toPath = `${baseName}.to`;
@@ -44,6 +47,7 @@ export function SystemTimeRow({ label, baseName, placeholder = '--:--' }: Props)
                         onChange={(v) => field.onChange(toString(v))}
                         ampm={false}
                         format="HH:mm"
+                        disabled={mergedDisabled}
                         slotProps={{
                             textField: {
                                 fullWidth: true,
@@ -68,6 +72,7 @@ export function SystemTimeRow({ label, baseName, placeholder = '--:--' }: Props)
                         onChange={(v) => field.onChange(toString(v))}
                         ampm={false}
                         format="HH:mm"
+                        disabled={mergedDisabled}
                         slotProps={{
                             textField: {
                                 fullWidth: true,

@@ -1,5 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { deleteBuidling, getBuildings, getDetailBuilding } from '../../../../api/buildings/buildings.api';
+import {
+    deleteBuidling,
+    exportBuildingsExcel,
+    getBuildings,
+    getDetailBuilding,
+} from '../../../../api/buildings/buildings.api';
 import { toastError, toastSuccess } from '../../../../utils/toast';
 
 export const BUILDINGS_QK = ['buildings'];
@@ -36,5 +41,11 @@ export function useDeleteBuilding() {
         onError: () => {
             toastError('Xoá toà nhà thất bại');
         },
+    });
+}
+
+export function useExportBuildings() {
+    return useMutation({
+        mutationFn: (buildingIds?: string[]) => exportBuildingsExcel(buildingIds),
     });
 }

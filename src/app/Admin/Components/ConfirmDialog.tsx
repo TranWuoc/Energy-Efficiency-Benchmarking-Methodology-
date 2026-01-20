@@ -1,3 +1,4 @@
+import type { ButtonProps } from '@mui/material/Button';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
@@ -15,27 +16,29 @@ type Props = {
     loading?: boolean;
     onCancel: () => void;
     onConfirm: () => void;
+
+    confirmText?: string;
+    confirmColor?: ButtonProps['color'];
+    confirmVariant?: ButtonProps['variant'];
 };
 
-export default function DeleteResponsiveDialog({
+export default function ConfirmDialog({
     open,
-    title = 'Xác nhận xoá',
-    description = 'Bạn có chắc chắn muốn xoá mục này? Hành động này không thể hoàn tác.',
+    title = 'Xác nhận',
+    description = 'Bạn có chắc chắn muốn thực hiện hành động này?',
     loading = false,
     onCancel,
     onConfirm,
+    confirmText = 'Xác nhận',
+    confirmColor = 'primary',
+    confirmVariant = 'contained',
 }: Props) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
-        <Dialog
-            fullScreen={fullScreen}
-            open={open}
-            onClose={loading ? undefined : onCancel}
-            aria-labelledby="responsive-delete-dialog-title"
-        >
-            <DialogTitle id="responsive-delete-dialog-title">{title}</DialogTitle>
+        <Dialog fullScreen={fullScreen} open={open} onClose={loading ? undefined : onCancel}>
+            <DialogTitle>{title}</DialogTitle>
 
             <DialogContent>
                 <DialogContentText>{description}</DialogContentText>
@@ -47,13 +50,13 @@ export default function DeleteResponsiveDialog({
                 </Button>
 
                 <Button
-                    variant="contained"
-                    color="error"
+                    variant={confirmVariant}
+                    color={confirmColor}
                     onClick={onConfirm}
                     disabled={loading}
                     startIcon={loading ? <CircularProgress size={16} /> : undefined}
                 >
-                    Xoá
+                    {confirmText}
                 </Button>
             </DialogActions>
         </Dialog>

@@ -10,13 +10,13 @@ export type SystemZoneConfig = {
 
 // GOV (buildingType=1) - đúng 5 khu theo BE enum: administration/meeting/lobby/corridor_wc/security
 export const GOV_SYSTEM_ZONE_CONFIG: SystemZoneConfig[] = [
-    { zoneCode: 'administration', label: 'Khu vực làm việc hành chính', systems: ['hvac', 'lighting'] },
-    { zoneCode: 'meeting', label: 'Hội trường & phòng họp lớn', systems: ['hvac', 'lighting'] },
-    { zoneCode: 'lobby', label: 'Sảnh chính & lễ tân', systems: ['hvac', 'lighting'] },
+    { zoneCode: 'administration', label: 'Khu vực làm việc hành chính', systems: ['hvac', 'lighting', 'camera'] },
+    { zoneCode: 'meeting', label: 'Hội trường & phòng họp lớn', systems: ['hvac', 'lighting', 'camera'] },
+    { zoneCode: 'lobby', label: 'Sảnh chính & lễ tân', systems: ['hvac', 'lighting', 'camera'] },
     {
         zoneCode: 'corridor_wc',
         label: 'Hành lang, cầu thang bộ, khu vệ sinh',
-        systems: ['hvac', 'lighting', 'waterHeating'],
+        systems: ['hvac', 'lighting', 'waterHeating', 'camera'],
     },
     { zoneCode: 'security', label: 'Khu bảo vệ/ an ninh', systems: ['hvac', 'lighting', 'camera'] },
 ];

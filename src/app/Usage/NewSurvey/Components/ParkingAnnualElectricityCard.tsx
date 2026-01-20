@@ -1,15 +1,17 @@
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { Box, Button, Paper, Stack, Typography } from '@mui/material';
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
 import RHFTextField from './RHFTextField';
 
-export function ParkingAnnualElectricityCard() {
+export function ParkingAnnualElectricityCard({ disabled }: { disabled?: boolean }) {
     const { control } = useFormContext();
     const { fields, append, remove } = useFieldArray({
         control,
         name: 'generalInfo.parkingAnnualElectricity',
     });
+    const readOnly = useWatch({ name: '__meta.readOnly' }) ?? false;
+    const mergedDisabled = disabled ?? readOnly;
 
     return (
         <Paper variant="outlined" sx={{ p: 3, borderRadius: 2 }}>
@@ -42,6 +44,7 @@ export function ParkingAnnualElectricityCard() {
                             variant="outlined"
                             onClick={() => remove(idx)}
                             startIcon={<RemoveCircleOutlineIcon />}
+                            disabled={mergedDisabled}
                         >
                             Xoá
                         </Button>
@@ -53,6 +56,7 @@ export function ParkingAnnualElectricityCard() {
                     onClick={() => append({ year: new Date().getFullYear(), monthlyAverageEnergyConsumption: 0 })}
                     sx={{ width: 'fit-content' }}
                     startIcon={<AddCircleOutlineIcon />}
+                    disabled={mergedDisabled}
                 >
                     Thêm mới năm
                 </Button>

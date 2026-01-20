@@ -17,23 +17,18 @@ import {
     Typography,
 } from '@mui/material';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
 
 import RHFCheckbox from '../Components/RHFCheckbox';
 import RHFSelect from '../Components/RHFSelect';
 import RHFTextField from '../Components/RHFTextField';
 import type { BuildingFormValues } from '../type/type';
+import { getLast3CompletedYears } from '../utils/yearOptions';
 
 const DATA_SOURCE_OPTIONS = [
     { label: 'Hoá đơn điện hàng tháng', value: 1 },
     { label: 'Công tơ điện & Báo cáo kiểm toán', value: 2 },
 ];
-
-const RENEWABLE_TYPES = [
-    { key: 'solar', title: 'Solar' },
-    { key: 'wind', title: 'Wind' },
-    { key: 'geothermal', title: 'Geothermal' },
-] as const;
 
 function buildRenewableDefault(year: number) {
     return {
@@ -77,98 +72,11 @@ function getNextAvailableYear(usedYears: number[], baseYear: number) {
     }
     return baseYear;
 }
-
-function YearRow({
-    idx,
-    yearOptions,
-    fieldsLength,
-    onRemove,
-}: {
-    idx: number;
-    yearOptions: { label: string; value: number }[];
-    fieldsLength: number;
-    onRemove: (idx: number) => void;
-}) {
-    return (
-        <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
-            <Box sx={{ p: 2 }}>
-                <Stack
-                    direction={{ xs: 'column', md: 'row' }}
-                    spacing={2}
-                    alignItems={{ xs: 'stretch', md: 'center' }}
-                    justifyContent="space-between"
-                >
-                    <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                        <Box sx={{ minWidth: 220 }}>
-                            <RHFSelect name={`consumedElectricity.${idx}.year`} label="Năm" options={yearOptions} />
-                        </Box>
-                        <Box sx={{ minWidth: 320 }}>
-                            <RHFSelect
-                                name={`consumedElectricity.${idx}.dataSource`}
-                                label="Nguồn dữ liệu"
-                                options={DATA_SOURCE_OPTIONS}
-                            />
-                        </Box>
-                    </Stack>
-                    <Stack direction="row" spacing={1} alignItems="center" justifyContent="flex-end">
-                        <IconButton
-                            aria-label="Xoá năm"
-                            onClick={() => onRemove(idx)}
-                            disabled={fieldsLength === 1}
-                            color="error"
-                        >
-                            <DeleteOutlineIcon />
-                        </IconButton>
-                    </Stack>
-                </Stack>
-            </Box>
-            <Divider />
-            <MonthlyTable idx={idx} />
-        </Paper>
-    );
-}
-
-function MonthlyTable({ idx }: { idx: number }) {
-    return (
-        <Table size="small">
-            <TableHead>
-                <TableRow>
-                    <TableCell sx={{ width: 180, fontWeight: 700 }}>Tháng</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>Điện năng tiêu thụ (kWh)</TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {Array.from({ length: 12 }, (_, i) => {
-                    const month = i + 1;
-                    return (
-                        <TableRow key={month} hover>
-                            <TableCell>Tháng {month}</TableCell>
-                            <TableCell>
-                                <RHFTextField
-                                    name={`consumedElectricity.${idx}.monthlyData.${i}.energyConsumption`}
-                                    type="number"
-                                    placeholder="Nhập kWh"
-                                    numberEmptyAsZero={false}
-                                    inputProps={{ min: 0 }}
-                                />
-                                <input
-                                    type="hidden"
-                                    name={`consumedElectricity.${idx}.monthlyData.${i}.month`}
-                                    value={month}
-                                    readOnly
-                                />
-                            </TableCell>
-                        </TableRow>
-                    );
-                })}
-            </TableBody>
-        </Table>
-    );
-}
-
-export default function MonthlyElectricStep() {
+export default function MonthlyElectricStep({ disabled }: { disabled?: boolean }) {
     const [tab, setTab] = useState(0);
     const { watch, setValue, getValues } = useFormContext<BuildingFormValues>();
+    const readOnly = useWatch({ name: '__meta.readOnly' }) ?? false;
+    const mergedDisabled = disabled ?? readOnly;
     const { fields, append, remove } = useFieldArray({ name: 'consumedElectricity' });
     const {
         fields: producedFields,
@@ -180,12 +88,7 @@ export default function MonthlyElectricStep() {
 
     const currentYear = new Date().getFullYear();
 
-    const yearOptions = useMemo(() => {
-        return Array.from({ length: 20 }, (_, i) => {
-            const y = currentYear - i;
-            return { label: String(y), value: y };
-        });
-    }, [currentYear]);
+    const yearOptions = useMemo(() => getLast3CompletedYears(), []);
 
     const consumedElectricity = watch('consumedElectricity') || [];
 
@@ -207,7 +110,6 @@ export default function MonthlyElectricStep() {
                 });
             }
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [consumedElectricity.length]);
 
     const initConsumedRef = useRef(false);
@@ -231,7 +133,6 @@ export default function MonthlyElectricStep() {
         if (!arr.length) {
             appendProduced(buildRenewableDefault(currentYear) as any);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleAddYear = useCallback(() => {
@@ -257,12 +158,12 @@ export default function MonthlyElectricStep() {
         <Stack spacing={2}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
                 {tab === 0 && (
-                    <Button variant="contained" onClick={handleAddYear}>
+                    <Button variant="contained" onClick={handleAddYear} disabled={mergedDisabled}>
                         Thêm năm
                     </Button>
                 )}
                 {tab === 1 && (
-                    <Button variant="contained" onClick={handleAddProducedYear}>
+                    <Button variant="contained" onClick={handleAddProducedYear} disabled={mergedDisabled}>
                         Thêm năm
                     </Button>
                 )}
@@ -327,7 +228,7 @@ export default function MonthlyElectricStep() {
                                         <IconButton
                                             aria-label="Xoá năm"
                                             onClick={() => remove(idx)}
-                                            disabled={fields.length === 1}
+                                            disabled={fields.length === 1 || mergedDisabled}
                                             color="error"
                                         >
                                             <DeleteOutlineIcon />
@@ -563,7 +464,7 @@ export default function MonthlyElectricStep() {
                                                         />
                                                         <RHFTextField
                                                             name={`producedElectricity.${idx}.wind.capacityFactor`}
-                                                            label="Capacity factor (%)"
+                                                            label="Hệ số công suất (%)"
                                                             type="number"
                                                             inputProps={{ min: 0 }}
                                                         />

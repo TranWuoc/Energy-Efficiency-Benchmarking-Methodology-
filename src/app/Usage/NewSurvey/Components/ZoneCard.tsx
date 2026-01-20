@@ -12,10 +12,11 @@ const SYSTEM_LABEL: Record<SystemKey, string> = {
 type Props = {
     zoneIndex: number;
     zone: SystemZoneConfig;
+    basePath?: string;
 };
 
-export default function ZoneCard({ zoneIndex, zone }: Props) {
-    const base = `operation.zones.${zoneIndex}`;
+export default function ZoneCard({ zoneIndex, zone, basePath = 'operation.zones' }: Props) {
+    const base = `${basePath}.${zoneIndex}`;
 
     return (
         <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2 }}>

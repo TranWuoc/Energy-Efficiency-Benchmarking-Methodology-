@@ -1,3 +1,5 @@
+import type { BuildingFormValues } from '../../app/Usage/NewSurvey/type/type';
+
 export interface TimeRange {
     from: string | null;
     to: string | null;
@@ -149,18 +151,11 @@ export interface BuildingGeneralInfo {
 }
 
 // ===== Main Building =====
-export interface Building {
+export interface Building extends BuildingFormValues {
     _id: string;
     buildingId: string;
-
-    generalInfo: BuildingGeneralInfo;
-    operation?: BuildingOperation;
-
-    consumedElectricity?: ElectricityConsumption[];
-    producedElectricity?: RenewableProduction[];
-
-    createdAt?: string; // ISO
-    updatedAt?: string; // ISO
+    createdAt?: string;
+    updatedAt?: string;
     __v?: number;
 }
 

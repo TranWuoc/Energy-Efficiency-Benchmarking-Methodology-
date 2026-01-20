@@ -1,13 +1,15 @@
 import { TextField as MuiTextField, type TextFieldProps } from '@mui/material';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 type Props = TextFieldProps & {
     name: string;
     numberEmptyAsZero?: boolean;
 };
 
-export default function RHFTextField({ name, type, numberEmptyAsZero = false, inputProps, ...other }: Props) {
+export default function RHFTextField({ name, disabled, type, numberEmptyAsZero = false, inputProps, ...other }: Props) {
     const { control } = useFormContext();
+    const readOnly = useWatch({ name: '__meta.readOnly' }) ?? false;
+    const mergedDisabled = disabled ?? readOnly;
 
     const isNumber = type === 'number';
 
@@ -22,9 +24,9 @@ export default function RHFTextField({ name, type, numberEmptyAsZero = false, in
                     inputRef={field.ref}
                     type={type}
                     fullWidth
+                    disabled={mergedDisabled}
                     error={!!fieldState.error}
                     helperText={fieldState.error?.message}
-                    // ✅ Ensure controlled value (avoid uncontrolled warnings)
                     value={field.value === null || field.value === undefined ? '' : field.value}
                     onChange={(e) => {
                         const raw = e.target.value;

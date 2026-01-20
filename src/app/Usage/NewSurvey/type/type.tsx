@@ -2,6 +2,12 @@ type TimeRange = { from: string | null; to: string | null };
 
 export type UtilisationLevel = 'Thấp' | 'Trung bình' | 'Cao';
 
+export type BuildingUser = {
+    fullName: string;
+    email: string;
+    phone: string;
+};
+
 export type BaseOperationZone = {
     zoneCode: string;
     isRented: boolean;
@@ -57,6 +63,7 @@ export type ProducedElectricityYear = {
 
 export type BuildingFormValues = {
     buildingId?: string;
+    user: BuildingUser;
     generalInfo: {
         name: string;
         address: string;

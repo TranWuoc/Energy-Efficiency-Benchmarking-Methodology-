@@ -1,10 +1,12 @@
 import {
     Box,
+    Button,
     Card,
     CardContent,
     Chip,
     Divider,
     Paper,
+    Stack,
     Table,
     TableBody,
     TableCell,
@@ -12,11 +14,14 @@ import {
     TableRow,
     Typography,
 } from '@mui/material';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { type UtilisationLevel } from '../../../api/buildings/building.type';
 import { BUILDING_TYPE_LABEL } from '../../../constants';
 import { convertTechnicalSystems } from '../../../utils/technicalSystem';
-import { useBuildingDetail } from '../Buildings/hooks/useBuildings';
+import { toastError, toastSuccess } from '../../../utils/toast';
+import { useBuildingDetail, useExportBuildings } from '../Buildings/hooks/useBuildings';
+import ConfirmDialog from '../Components/ConfirmDialog';
 import ConsumedElectricitySection from './Sections/ConsumedElectricitySection';
 import ProducedElectricitySection from './Sections/ProducedElectricitySection';
 import { getZoneLabel } from './helper';
@@ -61,6 +66,9 @@ const UTILISATION_CHIP_STYLE: Record<UtilisationLevel, { bg: string; color: stri
 
 export default function BuildingDetailPage() {
     const { buildingId } = useParams<{ buildingId: string }>();
+    const [openExportConfirm, setOpenExportConfirm] = useState(false);
+
+    const { mutateAsync: exportAsync, isPending: isExporting } = useExportBuildings();
     const { data, isLoading, isError } = useBuildingDetail(buildingId);
 
     if (isLoading) return <Box sx={{ p: 3 }}>Đang tải...</Box>;
@@ -84,8 +92,26 @@ export default function BuildingDetailPage() {
             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
                 BuildingId: {data.buildingId} • Tạo lúc: {formatDateTime(data.createdAt ?? '')}
             </Typography>
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+                <Button variant="contained" onClick={() => setOpenExportConfirm(true)} disabled={!buildingId}>
+                    Xuất dữ liệu
+                </Button>
+            </Stack>
 
             <Divider sx={{ my: 2 }} />
+
+            <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+                Thông tin người tạo
+            </Typography>
+            <KeyValueTable
+                rows={[
+                    { k: 'Họ và tên', v: data.user?.fullName },
+                    { k: 'Email', v: data.user?.email },
+                    { k: 'Số điện thoại', v: data.user?.phone },
+                ]}
+            />
+
+            <Divider sx={{ mb: 2, mt: 4 }} />
 
             {/* GENERAL INFO */}
             <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
@@ -96,7 +122,7 @@ export default function BuildingDetailPage() {
                     { k: 'Tên toà nhà', v: gi.name },
                     { k: 'Địa chỉ', v: gi.address },
                     { k: 'Chủ sở hữu', v: gi.owner },
-                    { k: 'Kiểu toà nhà', v: BUILDING_TYPE_LABEL[gi.buildingType] },
+                    { k: 'Kiểu toà nhà', v: BUILDING_TYPE_LABEL[gi.buildingType as 1 | 2] },
                     { k: 'Năm đưa vào vận hành', v: gi.commissioningYear },
                     { k: 'Hệ thống kỹ thuật', v: technicalSystems.length ? technicalSystems.join(', ') : '-' },
                     // { k: 'Khu vực', v: gi.climateZone },
@@ -217,6 +243,28 @@ export default function BuildingDetailPage() {
 
             {/* PRODUCED ELECTRICITY */}
             <ProducedElectricitySection produced={produced} />
+            <ConfirmDialog
+                open={openExportConfirm}
+                title="Xác nhận xuất dữ liệu"
+                description="Bạn có chắc chắn muốn xuất dữ liệu của toà nhà này không?"
+                loading={isExporting}
+                onCancel={() => {
+                    if (isExporting) return;
+                    setOpenExportConfirm(false);
+                }}
+                onConfirm={async () => {
+                    if (!buildingId) return;
+
+                    try {
+                        await exportAsync([buildingId]);
+                        setOpenExportConfirm(false);
+                        toastSuccess('Xuất bản ghi thành công');
+                    } catch {
+                        toastError('Xuất bản ghi không thành công');
+                    }
+                }}
+                confirmText="Xác nhận"
+            />
         </Box>
     );
 }

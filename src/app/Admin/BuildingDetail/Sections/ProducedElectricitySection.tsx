@@ -1,11 +1,9 @@
 import { Box, Chip, FormControl, InputLabel, MenuItem, Paper, Select, Typography } from '@mui/material';
 import React, { useMemo, useState } from 'react';
-import type { RenewableProduction } from '../../../../api/buildings/building.type';
-
-// Nếu bạn đã có type RenewableProduction trong building.type.ts thì import đúng path của bạn:
+import type { ProducedElectricityYear } from '../../../Usage/NewSurvey/type/type';
 
 type Props = {
-    produced?: RenewableProduction[];
+    produced?: ProducedElectricityYear[];
 };
 
 function ValueRow({ k, v }: { k: string; v: any }) {

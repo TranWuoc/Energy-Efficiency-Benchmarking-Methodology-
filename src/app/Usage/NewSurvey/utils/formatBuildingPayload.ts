@@ -146,6 +146,11 @@ export function formatBuildingPayload(values: BuildingFormValues) {
     const operation = values?.operation || {};
 
     return {
+        user: {
+            fullName: toStr(values?.user?.fullName),
+            email: toStr(values?.user?.email),
+            phone: toStr(values?.user?.phone),
+        },
         generalInfo: normalizeGeneralInfo(values?.generalInfo || {}),
 
         operation: {

@@ -5,7 +5,6 @@ import DashboardPage from '../app/Admin/Dashboard/index.tsx';
 import EPPage from '../app/Admin/EnergyPerformance/index.tsx';
 import EPDetailPage from '../app/Admin/EPDetail/index.tsx';
 import Buildings from '../app/Buildings/index.tsx';
-import EnergyPerformance from '../app/EnergyPerformance/index.tsx';
 import LandingPage from '../app/LandingPage/index.tsx';
 import LoginPage from '../app/Login/index.tsx';
 import CreateBuildingWizard from '../app/Usage/NewSurvey/CreateBuildingWizard.tsx';
@@ -28,25 +27,21 @@ const router = createBrowserRouter([
             },
             {
                 path: 'survey',
-                element: <CreateBuildingWizard />,
+                element: <CreateBuildingWizard mode="create" />,
             },
-            // {
-            //     path: 'survey/operator',
-            //     element: <OperationStep />,
-            // },
-            // {
-            //     path: 'survey/monthly-electricity',
-            //     element: <MonthlyElectricity />,
-            // },
+            {
+                path: 'survey/:buildingId',
+                element: <CreateBuildingWizard mode="view" />,
+            },
+            {
+                path: 'survey/:buildingId/edit',
+                element: <CreateBuildingWizard mode="edit" />,
+            },
         ],
     },
     {
         path: '/buildings',
         element: <Buildings />,
-    },
-    {
-        path: '/energy-performances',
-        element: <EnergyPerformance />,
     },
     {
         path: '/login',

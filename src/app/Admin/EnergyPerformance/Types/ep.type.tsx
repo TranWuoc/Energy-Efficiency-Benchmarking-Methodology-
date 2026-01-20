@@ -33,10 +33,8 @@ export interface EPNormalised {
     WOH: number | null; // Working Hours (optional)
 }
 
-/**
- * One EP record item
- */
 export interface EPRecord {
+    _id: string;
     ruleVersion: string;
     year: number;
 
@@ -52,10 +50,6 @@ export interface EPRecord {
     inputs: EPInputs;
     normalised: EPNormalised;
 }
-
-/**
- * API response
- */
 export interface EPListResponse {
     total: number;
     data: EPRecord[];

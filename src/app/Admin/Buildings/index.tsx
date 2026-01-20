@@ -3,6 +3,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
     Box,
     Button,
+    Checkbox,
     FormControl,
     IconButton,
     InputLabel,
@@ -24,8 +25,9 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Building } from '../../../api/buildings/building.type';
 import { BUILDING_TYPE_LABEL } from '../../../constants';
-import DeleteResponsiveDialog from '../Components/ConfirmDialog';
-import { useBuildings, useDeleteBuilding } from './hooks/useBuildings';
+import { toastError, toastSuccess } from '../../../utils/toast';
+import { default as ConfirmDialog } from '../Components/ConfirmDialog';
+import { useBuildings, useDeleteBuilding, useExportBuildings } from './hooks/useBuildings';
 
 type DeleteTarget = { buildingId: string; name?: string } | null;
 
@@ -38,7 +40,10 @@ function formatDateTime(iso: string) {
 export default function BuildingsPageAdmin() {
     const navigate = useNavigate();
     const [deleteTarget, setDeleteTarget] = useState<DeleteTarget>(null);
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [openExportConfirm, setOpenExportConfirm] = useState(false);
 
+    const { mutateAsync: exportAsync, isPending: isExporting } = useExportBuildings();
     const { data, isLoading, isError } = useBuildings();
     const { mutate: onDelete, isPending } = useDeleteBuilding();
 
@@ -49,11 +54,18 @@ export default function BuildingsPageAdmin() {
     const [yearFrom, setYearFrom] = useState<string>('');
     const [yearTo, setYearTo] = useState<string>('');
 
-    // Pagination
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const rows: Building[] = data?.data ?? [];
+    const rows: Building[] = useMemo(() => {
+        const list = data?.data ?? [];
+
+        return [...list].sort((a, b) => {
+            const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+            const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+            return timeB - timeA;
+        });
+    }, [data]);
 
     const climateZoneOptions = useMemo(() => {
         const set = new Set<string>();
@@ -109,6 +121,39 @@ export default function BuildingsPageAdmin() {
         const start = page * rowsPerPage;
         return filteredRows.slice(start, start + rowsPerPage);
     }, [filteredRows, page, rowsPerPage]);
+
+    const toggleSelectOne = (id: string) => {
+        setSelectedIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
+        });
+    };
+
+    const pageIds = useMemo(() => pagedRows.map((r) => r.buildingId), [pagedRows]);
+
+    const isAllOnPageSelected = useMemo(() => {
+        if (pageIds.length === 0) return false;
+        return pageIds.every((id) => selectedIds.has(id));
+    }, [pageIds, selectedIds]);
+
+    const isSomeOnPageSelected = useMemo(() => {
+        if (pageIds.length === 0) return false;
+        return pageIds.some((id) => selectedIds.has(id)) && !isAllOnPageSelected;
+    }, [pageIds, selectedIds, isAllOnPageSelected]);
+
+    const toggleSelectAllOnPage = () => {
+        setSelectedIds((prev) => {
+            const next = new Set(prev);
+            if (isAllOnPageSelected) {
+                pageIds.forEach((id) => next.delete(id));
+            } else {
+                pageIds.forEach((id) => next.add(id));
+            }
+            return next;
+        });
+    };
 
     const handleReset = () => {
         setKeyword('');
@@ -238,6 +283,10 @@ export default function BuildingsPageAdmin() {
                             fullWidth
                         />
 
+                        <Button variant="contained" onClick={() => setOpenExportConfirm(true)}>
+                            {selectedIds.size > 0 ? `Xuất dữ liệu (${selectedIds.size})` : 'Xuất toàn bộ dữ liệu'}
+                        </Button>
+
                         <Button variant="outlined" onClick={handleReset}>
                             Reset bộ lọc
                         </Button>
@@ -256,6 +305,13 @@ export default function BuildingsPageAdmin() {
                         <Table size="small">
                             <TableHead>
                                 <TableRow>
+                                    <TableCell padding="checkbox">
+                                        <Checkbox
+                                            checked={isAllOnPageSelected}
+                                            indeterminate={isSomeOnPageSelected}
+                                            onChange={toggleSelectAllOnPage}
+                                        />
+                                    </TableCell>
                                     <TableCell sx={{ fontWeight: 700 }}>Tên toà nhà</TableCell>
                                     <TableCell sx={{ fontWeight: 700 }}>Kiểu toà nhà</TableCell>
                                     <TableCell sx={{ fontWeight: 700 }}>Năm vận hành</TableCell>
@@ -292,9 +348,15 @@ export default function BuildingsPageAdmin() {
                                         const gi = b.generalInfo;
                                         return (
                                             <TableRow key={b.buildingId} hover>
+                                                <TableCell padding="checkbox">
+                                                    <Checkbox
+                                                        checked={selectedIds.has(b.buildingId)}
+                                                        onChange={() => toggleSelectOne(b.buildingId)}
+                                                    />
+                                                </TableCell>
                                                 <TableCell>{gi?.name ?? '-'}</TableCell>
                                                 <TableCell>
-                                                    {BUILDING_TYPE_LABEL[gi?.buildingType] ??
+                                                    {BUILDING_TYPE_LABEL[gi?.buildingType as 1 | 2] ??
                                                         `Type ${gi?.buildingType ?? '-'}`}
                                                 </TableCell>
                                                 <TableCell>{gi?.commissioningYear ?? '-'}</TableCell>
@@ -338,7 +400,7 @@ export default function BuildingsPageAdmin() {
                     />
                 </Paper>
             </Box>
-            <DeleteResponsiveDialog
+            <ConfirmDialog
                 open={Boolean(deleteTarget)}
                 title="Xoá toà nhà"
                 description={
@@ -349,6 +411,34 @@ export default function BuildingsPageAdmin() {
                 loading={isPending}
                 onCancel={handleCancel}
                 onConfirm={handleConfirm}
+            />
+            <ConfirmDialog
+                open={openExportConfirm}
+                title="Xác nhận xuất dữ liệu"
+                description={
+                    selectedIds.size > 0
+                        ? `Bạn có chắc chắn muốn xuất ${selectedIds.size} bản ghi vừa chọn không?`
+                        : 'Bạn có chắc chắn muốn xuất toàn bộ dữ liệu không?'
+                }
+                loading={isExporting}
+                onCancel={() => {
+                    if (isExporting) return;
+                    setOpenExportConfirm(false);
+                }}
+                onConfirm={async () => {
+                    try {
+                        const ids = Array.from(selectedIds);
+                        await exportAsync(ids.length > 0 ? ids : undefined);
+
+                        setOpenExportConfirm(false);
+                        toastSuccess('Xuất bản ghi thành công');
+                        setSelectedIds(new Set());
+                    } catch {
+                        toastError('Xuất bản ghi không thành công');
+                    }
+                }}
+                confirmText="Xác nhận"
+                confirmColor="primary"
             />
         </>
     );
