@@ -20,13 +20,6 @@ import { useBuildingDetail } from '../Buildings/hooks/useBuildings';
 import { useEPDetail } from '../EnergyPerformance/hooks/useEPList';
 import { buildEPInputsFromBuilding } from './helper/EPInputsBuilding';
 
-function formatDateTime(iso?: string) {
-    if (!iso) return '-';
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return iso;
-    return d.toLocaleString('vi-VN');
-}
-
 function renderValueWithUnit(value: any, unit?: string) {
     if (value === null || value === undefined) return '-';
     if (typeof value === 'number') {

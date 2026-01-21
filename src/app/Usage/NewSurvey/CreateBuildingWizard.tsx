@@ -173,10 +173,7 @@ export default function CreateBuildingWizard({ mode = 'create', buildingId: buil
 
         if (isCreate) {
             createBuilding.mutate(payload, {
-                onSuccess: (data: any) => {
-                    const created = data?.building ?? data;
-                    const newId = data?.buildingId || created?.buildingId;
-
+                onSuccess: () => {
                     toastSuccess('Tạo toà nhà thành công. Vui lòng kiểm tra hòm thư để xem chi tiết');
                 },
                 onError: (error) => {

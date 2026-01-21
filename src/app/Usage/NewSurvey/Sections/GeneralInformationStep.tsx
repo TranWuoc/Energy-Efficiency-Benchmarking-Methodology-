@@ -14,6 +14,7 @@ const CONTROL_SYSTEM_OPTIONS = [
     { label: 'Hệ thống điều khiển tập trung', value: 'Centralized' },
     { label: 'Hệ thống điều khiển phân tán', value: 'Distributed' },
     { label: 'Hệ thống điều khiển thông minh', value: 'Intelligent' },
+    { label: 'Hệ thống điều khiển khác', value: 'Other' },
 ];
 
 export default function GeneralInformationStep() {
